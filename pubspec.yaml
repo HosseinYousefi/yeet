@@ -1,0 +1,19 @@
+name: yeet
+description: a dank way to navigate
+version: 0.0.1
+author: Hossein Yousefi
+homepage:
+
+environment:
+  sdk: '>=2.12.0-259.9.beta <3.0.0'
+  flutter: ">=1.17.0"
+
+dependencies:
+  flutter:
+    sdk: flutter
+  path_to_regexp: ^0.4.0-nullsafety.0
+  
+
+dev_dependencies:
+  flutter_test:
+    sdk: flutter
