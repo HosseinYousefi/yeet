@@ -2,7 +2,7 @@
 
 
 <p align="center">
-<img src="yeet.png" alt="yeet" />
+<img src="https://raw.githubusercontent.com/HosseinYousefi/yeet/master/yeet.png" alt="yeet" />
 </p>
 
 ---
@@ -46,6 +46,14 @@ Yeeter(
                 'id': (id) => int.parse(id);
             },
             view: (params) => UserView(id: params['id']),
+        ),
+        Yeeter(
+            path: '/404',
+            view: NotFoundView(),
+        ),
+        Yeeter(
+            path: r':_(.*)',
+            redirectTo: '/404',
         ),
     ],
 );
