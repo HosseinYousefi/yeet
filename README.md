@@ -17,7 +17,7 @@ Example:
 
 ```dart
 Yeeter(
-    childen: [
+    children: [
         Yeeter(
             path: '/login',
             view: LoginView(),
@@ -57,4 +57,12 @@ Yeeter(
         ),
     ],
 );
+```
+
+You can push and pop programmatically.
+
+```dart
+Yeet.of(context).yeet('..'); // pops
+Yeet.of(context).yeet('/user/17'); // pushes /user/17
+Yeet.of(context).yeet('../16'); // goes to /user/16
 ```
