@@ -1,28 +1,124 @@
 import 'package:flutter/material.dart';
+import 'package:yeet/yeet.dart';
 
 void main() {
   runApp(MyApp());
 }
 
 class MyApp extends StatelessWidget {
-  // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      title: 'Flutter Demo',
-      theme: ThemeData(
-        // This is the theme of your application.
-        //
-        // Try running your application with "flutter run". You'll see the
-        // application has a blue toolbar. Then, without quitting the app, try
-        // changing the primarySwatch below to Colors.green and then invoke
-        // "hot reload" (press "r" in the console where you ran "flutter run",
-        // or simply save your changes to "hot reload" in a Flutter IDE).
-        // Notice that the counter didn't reset back to zero; the application
-        // is not restarted.
-        primarySwatch: Colors.blue,
+    final yeeter = Yeeter(
+      children: [
+        Yeeter(
+          path: '/login',
+          builder: (_, __) => LoginView(),
+        ),
+        Yeeter(
+          children: [
+            Yeeter(
+              path: '/',
+              builder: (_, __) => HomeView(),
+            ),
+            Yeeter(
+              path: '/profile',
+              builder: (_, __) => ProfileView(),
+              children: [
+                Yeeter(
+                  path: 'posts', // /profile/posts
+                  builder: (_, __) => PostsView(),
+                ),
+              ],
+            ),
+          ],
+        ),
+        Yeeter(
+          path: r'/user/:id(\d+)',
+          builder: (pathParams, queryParams) =>
+              UserView(int.parse(pathParams['id']!)),
+          children: [
+            Yeeter(
+              path: 'posts',
+              builder: (_, __) => PostsView(),
+            )
+          ],
+        ),
+        Yeeter(
+          path: '.*',
+          builder: (_, __) => NotFoundView(),
+        ),
+      ],
+    );
+    return Container();
+  }
+}
+
+class NotFoundView extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      body: Center(
+        child: Text('404!'),
       ),
-      home: MyHomePage(title: 'Flutter Demo Home Page'),
+    );
+  }
+}
+
+class UserView extends StatelessWidget {
+  final int id;
+
+  UserView(this.id);
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      body: Center(
+        child: Text('User #$id'),
+      ),
+    );
+  }
+}
+
+class PostsView extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      body: Center(
+        child: Text('Posts'),
+      ),
+    );
+  }
+}
+
+class ProfileView extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      body: Center(
+        child: Text('Profile'),
+      ),
+    );
+  }
+}
+
+class HomeView extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      body: Center(
+        child: Text('Home'),
+      ),
+    );
+  }
+}
+
+class LoginView extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      body: Center(
+        child: Text('Login'),
+      ),
     );
   }
 }

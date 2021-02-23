@@ -1,20 +1,29 @@
 import 'package:flutter/widgets.dart';
+import 'package:path_to_regexp/path_to_regexp.dart';
 
 class Yeeter {
-  final List<Yeeter>? children;
   final String? path;
-  final Widget? view;
-  final String? redirectTo;
-  final Map<String, Function(String)>? parsers;
+  final Widget? Function(
+      Map<String, String> pathParams, Map<String, String> queryParams)? builder;
+  final List<Yeeter>? children;
+  final _key = GlobalKey<NavigatorState>();
+  final RegExp? _regExp;
 
   Yeeter({
-    this.children,
     this.path,
-    this.view,
-    this.redirectTo,
-    this.parsers,
-  })  : assert(view == null || redirectTo == null,
-            'Both view and redirectTo cannot have value.'),
-        assert(path != null || children != null,
-            'Both path and children cannot be null.');
+    this.builder,
+    this.children,
+  })  : assert(path != null || children != null,
+            'Both path and children cannot be null.'),
+        _regExp = path == null
+            ? null
+            : pathToRegExp(path.startsWith('/') ? path.substring(1) : path);
+
+  Widget build(BuildContext context) {
+    final yeeters = children;
+    if (yeeters == null) {
+      return Container();
+    }
+    return Container();
+  }
 }

@@ -17,49 +17,47 @@ Example:
 
 ```dart
 Yeeter(
-    children: [
+  children: [
+    Yeeter(
+      path: '/login',
+      view: (_, __) => LoginView(),
+    ),
+    Yeeter(
+      children: [
         Yeeter(
-            path: '/login',
-            view: LoginView(),
+          path: '/',
+          view: (_, __) => HomeView(),
         ),
         Yeeter(
-            children: [
-                Yeeter(
-                    path: '/',
-                    view: (_) => HomeView(),
-                ),
-                Yeeter(
-                    path: '/profile'
-                    view: (_) => ProfileView(),
-                    children: [
-                        Yeeter(
-                            path: 'posts', // going /profile/posts
-                            view: (_) => PostsView(),
-                        ),
-                    ]
-                ),
-            ],
+          path: '/profile',
+          view: (_, __) => ProfileView(),
+          children: [
+            Yeeter(
+              path: 'posts', // going /profile/posts
+              view: (_, __) => PostsView(),
+            ),
+          ],
         ),
-        Yeeter(
-            path: r'/user/:id(\d+)',
-            parsers: {
-                'id': (id) => int.parse(id);
-            },
-            view: (params) => UserView(id: params['id']),
-        ),
-        Yeeter(
-            path: '/404',
-            view: NotFoundView(),
-        ),
-        Yeeter(
-            path: r':_(.*)',
-            redirectTo: '/404',
-        ),
-    ],
+      ],
+    ),
+    Yeeter(
+      path: r'/user/:id(\d+)',
+      view: (pathParams, queryParams) =>
+          UserView(id: int.parse(pathParams['id'])),
+    ),
+    Yeeter(
+      path: '/404',
+      view: (_, __) => NotFoundView(),
+    ),
+    Yeeter(
+      path: r':_(.*)',
+      redirectTo: '/404',
+    ),
+  ],
 );
 ```
 
-You can push and pop programmatically.
+You can push and pop programmatically just like `cd`.
 
 ```dart
 Yeet.of(context).yeet('..'); // pops
