@@ -1,3 +1,5 @@
-## [0.0.1] - TODO: Add release date.
+## [0.0.1]
+Yeet design prototype, not functional yet.
 
-* TODO: Describe initial release.
+## [0.0.2]
+Yeet works now, check out the example.

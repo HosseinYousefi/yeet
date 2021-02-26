@@ -8,48 +8,50 @@ void main() {
 class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    final yeeter = Yeeter(
+    final yeet = Yeet(
       children: [
-        Yeeter(
+        Yeet(
           path: '/login',
-          builder: (_, __) => LoginView(),
+          builder: (_) => LoginView(),
         ),
-        Yeeter(
+        Yeet(
           children: [
-            Yeeter(
+            Yeet(
               path: '/',
-              builder: (_, __) => HomeView(),
+              builder: (_) => HomeView(),
             ),
-            Yeeter(
+            Yeet(
               path: '/profile',
-              builder: (_, __) => ProfileView(),
+              builder: (_) => ProfileView(),
               children: [
-                Yeeter(
+                Yeet(
                   path: 'posts', // /profile/posts
-                  builder: (_, __) => PostsView(),
+                  builder: (_) => PostsView(),
                 ),
               ],
             ),
           ],
         ),
-        Yeeter(
+        Yeet(
           path: r'/user/:id(\d+)',
-          builder: (pathParams, queryParams) =>
-              UserView(int.parse(pathParams['id']!)),
+          builder: (params) => UserView(int.parse(params['id']!)),
           children: [
-            Yeeter(
+            Yeet(
               path: 'posts',
-              builder: (_, __) => PostsView(),
+              builder: (_) => PostsView(),
             )
           ],
         ),
-        Yeeter(
+        Yeet(
           path: '.*',
-          builder: (_, __) => NotFoundView(),
+          builder: (_) => NotFoundView(),
         ),
       ],
     );
-    return Container();
+    return MaterialApp.router(
+      routeInformationParser: YeetInformationParser(),
+      routerDelegate: YeeterDelegate(yeet: yeet),
+    );
   }
 }
 
