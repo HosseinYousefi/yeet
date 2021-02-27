@@ -1,8 +1,7 @@
 name: yeet
 description: a dank way to navigate
-version: 0.0.2
-author: Hossein Yousefi
-homepage:
+version: 0.0.1-dev.1
+repository: https://github.com/HosseinYousefi/yeet
 
 environment:
   sdk: '>=2.12.0-259.9.beta <3.0.0'
