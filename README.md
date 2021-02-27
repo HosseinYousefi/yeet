@@ -11,56 +11,57 @@ A dank way to navigate.
 
 ---
 
-I'm still working on the architecture so nothing works yet, but here's what it should look like.
+**Still experimental!**
 
-Example:
+## How to yeet?
+
+1. Define your yeet:
 
 ```dart
-Yeeter(
+final yeet = Yeet(
   children: [
-    Yeeter(
-      path: '/login',
-      view: (_, __) => LoginView(),
+    Yeet(
+      path: '/',
+      builder: (_) => HomeView(),
     ),
-    Yeeter(
+    Yeet(
+      path: r'/user/:id(\d+)',
+      builder: (params) => UserView(int.parse(params['id']!)),
       children: [
-        Yeeter(
-          path: '/',
-          view: (_, __) => HomeView(),
-        ),
-        Yeeter(
-          path: '/profile',
-          view: (_, __) => ProfileView(),
-          children: [
-            Yeeter(
-              path: 'posts', // going /profile/posts
-              view: (_, __) => PostsView(),
-            ),
-          ],
-        ),
+        Yeet(
+          path: 'posts',
+          builder: (params) => PostsView(int.parse(params['id']!)),
+        )
       ],
     ),
-    Yeeter(
-      path: r'/user/:id(\d+)',
-      view: (pathParams, queryParams) =>
-          UserView(id: int.parse(pathParams['id'])),
-    ),
-    Yeeter(
-      path: '/404',
-      view: (_, __) => NotFoundView(),
-    ),
-    Yeeter(
-      path: r':_(.*)',
-      redirectTo: '/404',
+    Yeet(
+      path: ':_(.*)',
+      builder: (_) => NotFoundView(),
     ),
   ],
 );
 ```
 
-You can push and pop programmatically just like `cd`.
+2. Turn your `MaterialApp` into `MaterialApp.router`.
 
 ```dart
-Yeet.of(context).yeet('..'); // pops
-Yeet.of(context).yeet('/user/17'); // pushes /user/17
-Yeet.of(context).yeet('../16'); // goes to /user/16
+return MaterialApp.router(
+  routeInformationParser: YeetInformationParser(),
+  routerDelegate: YeeterDelegate(yeet: yeet),
+);
 ```
+
+3. Set new paths.
+
+```dart
+Router.of(context).routerDelegate.setNewRoutePath(
+    RouteInformation(location: '/your/new/path'));
+```
+
+4. And yeet back.
+
+```dart
+Router.of(context).routerDelegate.popRoute();
+```
+
+5. Enjoy!

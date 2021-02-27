@@ -6,39 +6,38 @@ import 'yeet.dart';
 class YeeterDelegate extends RouterDelegate<RouteInformation>
     with ChangeNotifier {
   final Yeet yeet;
-  RouteInformation routeInformation = RouteInformation(location: '/');
 
-  static final GlobalKey<NavigatorState> _navigatorKey =
-      GlobalKey<NavigatorState>();
+  final GlobalKey<NavigatorState> _navigatorKey = GlobalKey<NavigatorState>();
 
   YeeterDelegate({
     required this.yeet,
-  });
+    String initialPath = '/',
+  }) {
+    setNewRoutePath(RouteInformation(location: initialPath));
+  }
 
   List<Page>? _dfs(
       Yeet node, String path, int matchedTill, Map<String, String> params) {
     print('currently at ${node.path}');
-    print(path);
-    print(matchedTill);
+
     final pages = <Page>[];
     if (node.regExp != null) {
       final isRootPath = node.path!.startsWith('/');
-      // If it's a relative path we continue from matchedTill.
-      final startingFrom = isRootPath ? 0 : matchedTill;
-      final match = node.regExp!.matchAsPrefix(path, startingFrom);
+      if (isRootPath) matchedTill = 0;
+      final match = node.regExp!.matchAsPrefix(path.substring(matchedTill));
       if (match != null) {
         params.addAll(extract(node.parameters, match));
         if (node.builder != null) {
           pages.add(MaterialPage(
-            key: ValueKey(path.substring(startingFrom, match.end)),
+            key: ValueKey(path.substring(0, matchedTill + match.end)),
             child: node.builder!(params),
           ));
         }
-        if (match.end == node.path!.length) {
+        if (matchedTill + match.end == path.length) {
           // The matching is final.
           return pages;
         }
-        matchedTill = match.end;
+        matchedTill += match.end + 1;
       }
     }
     if (node.children != null) {
@@ -58,31 +57,44 @@ class YeeterDelegate extends RouterDelegate<RouteInformation>
     return null;
   }
 
+  List<Page> _pages = [];
+
   @override
   Widget build(Object context) {
+    print('I am rebuilding now');
+    print(_pages);
     return Navigator(
       key: _navigatorKey,
-      pages: _dfs(
-        yeet,
-        Uri.decodeComponent(routeInformation.location!),
-        1,
-        {},
-      )!,
+      pages: _pages,
       observers: [HeroController()],
+      onPopPage: (route, result) => false,
     );
   }
 
   @override
-  Future<bool> popRoute() {
-    throw UnimplementedError();
+  Future<bool> popRoute() async {
+    if (_pages.length == 1) {
+      return false;
+    }
+    await setNewRoutePath(RouteInformation(
+        location: (_pages[_pages.length - 2].key as ValueKey).value));
+    return true;
   }
 
   @override
-  Future<void> setNewRoutePath(RouteInformation configuration) async {
-    routeInformation = configuration;
-    notifyListeners();
+  Future<void> setNewRoutePath(RouteInformation configuration) {
+    return Future.sync(() {
+      _pages = _dfs(
+        yeet,
+        Uri.decodeComponent(configuration.location!),
+        0,
+        {},
+      )!;
+      notifyListeners();
+    });
   }
 
   @override
-  RouteInformation? get currentConfiguration => routeInformation;
+  RouteInformation? get currentConfiguration =>
+      RouteInformation(location: (_pages.last.key as ValueKey).value);
 }
