@@ -1,6 +1,6 @@
 name: yeet
 description: a dank way to navigate
-version: 0.0.1-dev.1
+version: 0.0.2
 repository: https://github.com/HosseinYousefi/yeet
 
 environment:
