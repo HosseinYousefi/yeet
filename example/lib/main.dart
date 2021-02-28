@@ -64,19 +64,12 @@ class UserView extends StatelessWidget {
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
             ElevatedButton(
-              onPressed: () {
-                Router.of(context).routerDelegate.setNewRoutePath(
-                    RouteInformation(location: '/user/$id/posts'));
-              },
+              onPressed: () => context.yeet('posts'),
               child: Text('Posts'),
             ),
             SizedBox(height: 10),
             ElevatedButton(
-              onPressed: () {
-                Router.of(context)
-                    .routerDelegate
-                    .setNewRoutePath(RouteInformation(location: '/'));
-              },
+              onPressed: () => context.yeet('/'),
               child: Text('Home'),
             ),
           ],
@@ -97,9 +90,7 @@ class PostsView extends StatelessWidget {
       appBar: AppBar(title: Text('Posts of user #$id')),
       body: Center(
         child: ElevatedButton(
-          onPressed: () {
-            Router.of(context).routerDelegate.popRoute();
-          },
+          onPressed: () => context.yeet(),
           child: Text('Back'),
         ),
       ),
@@ -114,10 +105,7 @@ class HomeView extends StatelessWidget {
       appBar: AppBar(title: Text('HomeView')),
       body: Center(
         child: ElevatedButton(
-          onPressed: () {
-            Router.of(context).routerDelegate.setNewRoutePath(
-                RouteInformation(location: '/user/${Random().nextInt(10)}'));
-          },
+          onPressed: () => context.yeet('/user/${Random().nextInt(10)}'),
           child: Text('Random User'),
         ),
       ),
