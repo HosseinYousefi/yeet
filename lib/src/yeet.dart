@@ -1,9 +1,14 @@
 import 'package:flutter/widgets.dart';
 import 'package:path_to_regexp/path_to_regexp.dart';
+import 'package:yeet/yeet.dart';
 
 typedef WidgetBuilder = Widget Function(Map<String, String> params);
 
 class Yeet {
+  static YeeterDelegate of(BuildContext context) {
+    return Router.of(context).routerDelegate as YeeterDelegate;
+  }
+
   final String? path;
   final WidgetBuilder? builder;
   final List<Yeet>? children;

@@ -5,21 +5,19 @@ import 'yeet.dart';
 
 class YeeterDelegate extends RouterDelegate<RouteInformation>
     with ChangeNotifier {
-  final Yeet yeet;
+  final Yeet _yeet;
 
   final GlobalKey<NavigatorState> _navigatorKey = GlobalKey<NavigatorState>();
 
   YeeterDelegate({
-    required this.yeet,
+    required Yeet yeet,
     String initialPath = '/',
-  }) {
+  }) : _yeet = yeet {
     setNewRoutePath(RouteInformation(location: initialPath));
   }
 
   List<Page>? _dfs(
       Yeet node, String path, int matchedTill, Map<String, String> params) {
-    print('currently at ${node.path}');
-
     final pages = <Page>[];
     if (node.regExp != null) {
       final isRootPath = node.path!.startsWith('/');
@@ -61,14 +59,34 @@ class YeeterDelegate extends RouterDelegate<RouteInformation>
 
   @override
   Widget build(Object context) {
-    print('I am rebuilding now');
-    print(_pages);
     return Navigator(
       key: _navigatorKey,
       pages: _pages,
       observers: [HeroController()],
       onPopPage: (route, result) => false,
     );
+  }
+
+  void yeet([String? path]) {
+    if (path == null) {
+      if (_pages.length == 1) {
+        return;
+      }
+      setNewRoutePath(RouteInformation(
+          location: (_pages[_pages.length - 2].key as ValueKey).value));
+      return;
+    }
+    if (path.startsWith('/')) {
+      _pages = _dfs(
+        _yeet,
+        Uri.decodeComponent(path),
+        0,
+        {},
+      )!;
+      notifyListeners();
+    } else {
+      yeet(currentConfiguration!.location! + '/' + path);
+    }
   }
 
   @override
@@ -84,13 +102,7 @@ class YeeterDelegate extends RouterDelegate<RouteInformation>
   @override
   Future<void> setNewRoutePath(RouteInformation configuration) {
     return Future.sync(() {
-      _pages = _dfs(
-        yeet,
-        Uri.decodeComponent(configuration.location!),
-        0,
-        {},
-      )!;
-      notifyListeners();
+      yeet(configuration.location!);
     });
   }
 

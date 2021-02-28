@@ -15,7 +15,16 @@ A dank way to navigate.
 
 ## How to yeet?
 
-1. Define your yeet:
+0. Install latest version of yeet:
+
+```yaml
+dependencies:
+  flutter:
+    sdk: flutter
+  yeet: ^0.0.3
+```
+
+1. Define your yeets:
 
 ```dart
 final yeet = Yeet(
@@ -42,7 +51,7 @@ final yeet = Yeet(
 );
 ```
 
-2. Turn your `MaterialApp` into `MaterialApp.router`.
+2. Turn your `MaterialApp` into `MaterialApp.router` and add the following arguments.
 
 ```dart
 return MaterialApp.router(
@@ -54,14 +63,16 @@ return MaterialApp.router(
 3. Set new paths.
 
 ```dart
-Router.of(context).routerDelegate.setNewRoutePath(
-    RouteInformation(location: '/your/new/path'));
+context.yeet('/your/new/path');
+context.yeet('can/be/relative');
 ```
 
-4. And yeet back.
+4. And pop.
 
 ```dart
-Router.of(context).routerDelegate.popRoute();
+context.yeet();
 ```
 
 5. Enjoy!
+
+6. Missing a feature? Have a suggestion? Found a bug? [Open an issue.](https://github.com/HosseinYousefi/yeet/issues) Thanks!
