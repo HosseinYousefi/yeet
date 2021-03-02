@@ -1,6 +1,6 @@
 name: yeet
 description: a dank way to navigate. no boilerplate. no code generation. no classes. just yeet it.
-version: 0.0.3
+version: 0.0.4
 repository: https://github.com/HosseinYousefi/yeet
 
 environment:

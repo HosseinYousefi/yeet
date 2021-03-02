@@ -4,12 +4,25 @@ import 'package:yeet/yeet.dart';
 
 typedef WidgetBuilder = Widget Function(Map<String, String> params);
 
+/// The class that defines your routing tree structure.
+///
+/// If several Yeets match a given path the very top one will be chosen.
 class Yeet {
   static YeeterDelegate of(BuildContext context) {
     return Router.of(context).routerDelegate as YeeterDelegate;
   }
 
+  /// The blueprint path for this yeet.
+  ///
+  /// You can use parameters and regexes inside paranthesis.
+  /// For example `'/user/:id(/d+)'` means the path should match
+  /// `'/user/10'` but not `'/user/alice'`.
+  ///
+  /// It can also be relative. For example if the parent yeet has a
+  /// path of `'/profile'` and this yeet has a path of `'settings'`
+  /// it's actually matching `'/profile/settings'`.
   final String? path;
+
   final WidgetBuilder? builder;
   final List<Yeet>? children;
   final List<String> parameters;
@@ -17,6 +30,7 @@ class Yeet {
 
   Yeet({
     this.path,
+    bool caseSensitive = true,
     this.builder,
     this.children,
   }) : parameters = [] {
@@ -31,6 +45,7 @@ class Yeet {
         path!,
         parameters: parameters,
         prefix: true,
+        caseSensitive: caseSensitive,
       );
     } else {
       regExp = null;

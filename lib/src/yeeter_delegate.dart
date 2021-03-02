@@ -3,6 +3,7 @@ import 'package:path_to_regexp/path_to_regexp.dart';
 
 import 'yeet.dart';
 
+/// Put this as your routerDelegate in [MaterialApp.router].
 class YeeterDelegate extends RouterDelegate<RouteInformation>
     with ChangeNotifier {
   final Yeet _yeet;
@@ -19,23 +20,32 @@ class YeeterDelegate extends RouterDelegate<RouteInformation>
   List<Page>? _dfs(
       Yeet node, String path, int matchedTill, Map<String, String> params) {
     final pages = <Page>[];
+
     if (node.regExp != null) {
+      // Handling relative and non-relative paths correctly
       final isRootPath = node.path!.startsWith('/');
       if (isRootPath) matchedTill = 0;
       final match = node.regExp!.matchAsPrefix(path.substring(matchedTill));
+
       if (match != null) {
         params.addAll(extract(node.parameters, match));
         if (node.builder != null) {
-          pages.add(MaterialPage(
-            key: ValueKey(path.substring(0, matchedTill + match.end)),
-            child: node.builder!(params),
-          ));
+          pages.add(
+            MaterialPage(
+              key: ValueKey(path.substring(0, matchedTill + match.end)),
+              child: node.builder!(params),
+            ),
+          );
         }
         if (matchedTill + match.end == path.length) {
           // The matching is final.
           return pages;
         }
-        matchedTill += match.end + 1;
+        if (path[matchedTill + match.end] == '/') {
+          matchedTill += match.end + 1;
+        } else {
+          matchedTill = 0;
+        }
       }
     }
     if (node.children != null) {
@@ -67,6 +77,7 @@ class YeeterDelegate extends RouterDelegate<RouteInformation>
     );
   }
 
+  /// Navigates to another path. If no arguments are given, it pops the top page.
   void yeet([String? path]) {
     if (path == null) {
       if (_pages.length == 1) {

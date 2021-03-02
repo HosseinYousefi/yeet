@@ -9,6 +9,8 @@
 
 A dank way to navigate.
 
+[![Pub Version](https://img.shields.io/pub/v/yeet)](https://pub.dev/packages/yeet/versions/0.0.4)
+
 ---
 
 **Still experimental!**
