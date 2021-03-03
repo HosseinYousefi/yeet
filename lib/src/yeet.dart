@@ -27,10 +27,12 @@ class Yeet {
   final List<Yeet>? children;
   final List<String> parameters;
   late final RegExp? regExp;
+  final bool persist;
 
   Yeet({
     this.path,
     bool caseSensitive = true,
+    this.persist = false,
     this.builder,
     this.children,
   }) : parameters = [] {

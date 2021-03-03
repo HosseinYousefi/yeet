@@ -83,8 +83,7 @@ class YeeterDelegate extends RouterDelegate<RouteInformation>
       if (_pages.length == 1) {
         return;
       }
-      setNewRoutePath(RouteInformation(
-          location: (_pages[_pages.length - 2].key as ValueKey).value));
+      yeet((_pages[_pages.length - 2].key as ValueKey).value);
       return;
     }
     if (path.startsWith('/')) {
