@@ -14,21 +14,21 @@ class MyApp extends StatelessWidget {
       children: [
         Yeet(
           path: '/',
-          builder: (_) => HomeView(),
+          builder: (_, __) => HomeView(),
         ),
         Yeet(
           path: r'/user/:id(\d+)',
-          builder: (params) => UserView(int.parse(params['id']!)),
+          builder: (params, _) => UserView(int.parse(params['id']!)),
           children: [
             Yeet(
               path: 'posts',
-              builder: (params) => PostsView(int.parse(params['id']!)),
+              builder: (params, _) => PostsView(int.parse(params['id']!)),
             )
           ],
         ),
         Yeet(
           path: ':_(.*)',
-          builder: (_) => NotFoundView(),
+          builder: (_, __) => NotFoundView(),
         ),
       ],
     );

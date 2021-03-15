@@ -2,7 +2,8 @@ import 'package:flutter/widgets.dart';
 import 'package:path_to_regexp/path_to_regexp.dart';
 import 'package:yeet/yeet.dart';
 
-typedef WidgetBuilder = Widget Function(Map<String, String> params);
+typedef WidgetBuilder = Widget Function(
+    Map<String, String> params, Map<String, String> query);
 
 /// The class that defines your routing tree structure.
 ///

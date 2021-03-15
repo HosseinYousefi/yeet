@@ -23,7 +23,7 @@ A dank way to navigate.
 dependencies:
   flutter:
     sdk: flutter
-  yeet: ^0.0.4
+  yeet: ^0.1.0
 ```
 
 1. Define your yeets:
@@ -33,21 +33,21 @@ final yeet = Yeet(
   children: [
     Yeet(
       path: '/',
-      builder: (_) => HomeView(),
+      builder: (_, __) => HomeView(),
     ),
     Yeet(
       path: r'/user/:id(\d+)',
-      builder: (params) => UserView(int.parse(params['id']!)),
+      builder: (params, _) => UserView(int.parse(params['id']!)),
       children: [
         Yeet(
           path: 'posts',
-          builder: (params) => PostsView(int.parse(params['id']!)),
+          builder: (params, _) => PostsView(int.parse(params['id']!)),
         )
       ],
     ),
     Yeet(
       path: ':_(.*)',
-      builder: (_) => NotFoundView(),
+      builder: (_, __) => NotFoundView(),
     ),
   ],
 );

@@ -1,3 +1,9 @@
+## 0.1.0
+
+* **Breaking changes**
+  * `builder` now gets two parameters: `params` like before and the added `query`, which is the query parameters of the path.
+* Added support for paths like `../path/` with `.` and `..`.
+
 ## 0.0.4
 
 * Fixed a bug in matching path patterns.

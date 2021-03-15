@@ -18,7 +18,12 @@ class YeeterDelegate extends RouterDelegate<RouteInformation>
   }
 
   List<Page>? _dfs(
-      Yeet node, String path, int matchedTill, Map<String, String> params) {
+    Yeet node,
+    String path,
+    int matchedTill,
+    Map<String, String> params,
+    Map<String, String> query,
+  ) {
     final pages = <Page>[];
 
     if (node.regExp != null) {
@@ -33,7 +38,7 @@ class YeeterDelegate extends RouterDelegate<RouteInformation>
           pages.add(
             MaterialPage(
               key: ValueKey(path.substring(0, matchedTill + match.end)),
-              child: node.builder!(params),
+              child: node.builder!(params, query),
             ),
           );
         }
@@ -53,7 +58,7 @@ class YeeterDelegate extends RouterDelegate<RouteInformation>
           childIndex < node.children!.length;
           ++childIndex) {
         final childList =
-            _dfs(node.children![childIndex], path, matchedTill, params);
+            _dfs(node.children![childIndex], path, matchedTill, params, query);
         if (childList != null) {
           // We found a match, we can return.
           pages.addAll(childList);
@@ -86,12 +91,14 @@ class YeeterDelegate extends RouterDelegate<RouteInformation>
       yeet((_pages[_pages.length - 2].key as ValueKey).value);
       return;
     }
+    final uri = Uri.parse(path);
     if (path.startsWith('/')) {
       _pages = _dfs(
         _yeet,
-        Uri.decodeComponent(path),
+        uri.path,
         0,
         {},
+        uri.queryParameters,
       )!;
       notifyListeners();
     } else {
