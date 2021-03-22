@@ -1,11 +1,13 @@
+import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:path_to_regexp/path_to_regexp.dart';
 import 'package:yeet/yeet.dart';
 
-typedef WidgetBuilder = Widget Function(
+typedef YeetWidgetBuilder = Widget Function(
     Map<String, String> params, Map<String, String> query);
 
 /// The class that defines your routing tree structure.
+///
 ///
 /// If several Yeets match a given path the very top one will be chosen.
 class Yeet {
@@ -24,8 +26,30 @@ class Yeet {
   /// it's actually matching `'/profile/settings'`.
   final String? path;
 
-  final WidgetBuilder? builder;
+  /// A function that gets the path and query parameters and builds the widget.
+  final YeetWidgetBuilder? builder;
+
+  /// A list of subyeets of this yeet.
   final List<Yeet>? children;
+
+  final Duration transitionDuration;
+
+  final Duration reverseTransitionDuration;
+
+  final bool maintainState;
+
+  final bool fullscreenDialog;
+
+  RouteTransitionsBuilder? transitionsBuilder;
+
+  final bool opaque;
+
+  final bool barrierDismissible;
+
+  final Color? barrierColor;
+
+  final String? barrierLabel;
+
   final List<String> parameters;
   late final RegExp? regExp;
 
@@ -34,6 +58,16 @@ class Yeet {
     bool caseSensitive = true,
     this.builder,
     this.children,
+    this.maintainState = true,
+    this.fullscreenDialog = false,
+    this.opaque = true,
+    this.transitionsBuilder,
+    this.barrierDismissible = false,
+    RoutePageBuilder? pageBuilder,
+    this.barrierColor,
+    this.barrierLabel,
+    this.reverseTransitionDuration = const Duration(milliseconds: 300),
+    this.transitionDuration = const Duration(milliseconds: 300),
   }) : parameters = [] {
     if (children != null && children!.isEmpty) {
       throw ArgumentError('children cannot be empty');

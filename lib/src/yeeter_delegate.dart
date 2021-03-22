@@ -1,19 +1,25 @@
+import 'dart:io';
+
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:path_to_regexp/path_to_regexp.dart';
+import 'package:yeet/src/yeet_page.dart';
 
 import 'yeet.dart';
+
+final GlobalKey<NavigatorState> _navigatorKey = GlobalKey<NavigatorState>();
 
 /// Put this as your routerDelegate in [MaterialApp.router].
 class YeeterDelegate extends RouterDelegate<RouteInformation>
     with ChangeNotifier {
   final Yeet _yeet;
-
-  final GlobalKey<NavigatorState> _navigatorKey = GlobalKey<NavigatorState>();
+  List<Page> _pages;
 
   YeeterDelegate({
     required Yeet yeet,
     String initialPath = '/',
-  }) : _yeet = yeet {
+  })  : _yeet = yeet,
+        _pages = [] {
     setNewRoutePath(RouteInformation(location: initialPath));
   }
 
@@ -35,12 +41,37 @@ class YeeterDelegate extends RouterDelegate<RouteInformation>
       if (match != null) {
         params.addAll(extract(node.parameters, match));
         if (node.builder != null) {
-          pages.add(
-            MaterialPage(
-              key: ValueKey(path.substring(0, matchedTill + match.end)),
-              child: node.builder!(params, query),
-            ),
-          );
+          final key = ValueKey(path.substring(0, matchedTill + match.end));
+          final child = node.builder!(params, query);
+          if (node.transitionsBuilder == null) {
+            if (Platform.isIOS || Platform.isMacOS) {
+              pages.add(CupertinoPage(
+                  key: key,
+                  child: child,
+                  fullscreenDialog: node.fullscreenDialog,
+                  maintainState: node.maintainState));
+            } else {
+              pages.add(MaterialPage(
+                  key: key,
+                  child: child,
+                  fullscreenDialog: node.fullscreenDialog,
+                  maintainState: node.maintainState));
+            }
+          } else {
+            pages.add(YeetPage(
+              key: key,
+              barrierColor: node.barrierColor,
+              barrierDismissible: node.barrierDismissible,
+              barrierLabel: node.barrierLabel,
+              fullscreenDialog: node.fullscreenDialog,
+              maintainState: node.maintainState,
+              opaque: node.opaque,
+              reverseTransitionDuration: node.reverseTransitionDuration,
+              transitionDuration: node.transitionDuration,
+              transitionsBuilder: node.transitionsBuilder!,
+              child: child,
+            ));
+          }
         }
         if (matchedTill + match.end == path.length) {
           // The matching is final.
@@ -69,8 +100,6 @@ class YeeterDelegate extends RouterDelegate<RouteInformation>
     // No match found in this subtree.
     return null;
   }
-
-  List<Page> _pages = [];
 
   @override
   Widget build(Object context) {

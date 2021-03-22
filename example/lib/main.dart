@@ -19,6 +19,11 @@ class MyApp extends StatelessWidget {
         Yeet(
           path: r'/user/:id(\d+)',
           builder: (params, _) => UserView(int.parse(params['id']!)),
+          transitionsBuilder: (context, animation, secondaryAnimation, child) =>
+              FadeTransition(
+            opacity: animation,
+            child: child,
+          ),
           children: [
             Yeet(
               path: 'posts',
