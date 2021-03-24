@@ -1,6 +1,6 @@
 name: yeet
 description: a dank way to navigate. no boilerplate. no code generation. no classes. just yeet it.
-version: 0.1.1
+version: 0.2.0
 repository: https://github.com/HosseinYousefi/yeet
 
 environment:
@@ -11,6 +11,7 @@ dependencies:
   flutter:
     sdk: flutter
   path_to_regexp: ^0.4.0
+  universal_platform: ^1.0.0-nullsafety
   
 dev_dependencies:
   flutter_test:

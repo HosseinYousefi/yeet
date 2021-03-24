@@ -1,13 +1,13 @@
-import 'dart:io';
-
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:path_to_regexp/path_to_regexp.dart';
+import 'package:universal_platform/universal_platform.dart';
 import 'package:yeet/src/yeet_page.dart';
 
 import 'yeet.dart';
 
 final GlobalKey<NavigatorState> _navigatorKey = GlobalKey<NavigatorState>();
+final _heroController = HeroController();
 
 /// Put this as your routerDelegate in [MaterialApp.router].
 class YeeterDelegate extends RouterDelegate<RouteInformation>
@@ -17,10 +17,9 @@ class YeeterDelegate extends RouterDelegate<RouteInformation>
 
   YeeterDelegate({
     required Yeet yeet,
-    String initialPath = '/',
-  })  : _yeet = yeet,
+  })   : _yeet = yeet,
         _pages = [] {
-    setNewRoutePath(RouteInformation(location: initialPath));
+    setNewRoutePath(RouteInformation(location: '/'));
   }
 
   List<Page>? _dfs(
@@ -44,7 +43,7 @@ class YeeterDelegate extends RouterDelegate<RouteInformation>
           final key = ValueKey(path.substring(0, matchedTill + match.end));
           final child = node.builder!(params, query);
           if (node.transitionsBuilder == null) {
-            if (Platform.isIOS || Platform.isMacOS) {
+            if (UniversalPlatform.isIOS || UniversalPlatform.isMacOS) {
               pages.add(CupertinoPage(
                   key: key,
                   child: child,
@@ -106,7 +105,7 @@ class YeeterDelegate extends RouterDelegate<RouteInformation>
     return Navigator(
       key: _navigatorKey,
       pages: _pages,
-      observers: [HeroController()],
+      observers: [_heroController],
       onPopPage: (route, result) => false,
     );
   }
@@ -147,6 +146,7 @@ class YeeterDelegate extends RouterDelegate<RouteInformation>
 
   @override
   Future<void> setNewRoutePath(RouteInformation configuration) {
+    print('loc: ${configuration.location}');
     return Future.sync(() {
       yeet(configuration.location!);
     });

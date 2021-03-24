@@ -1,3 +1,8 @@
+
+## 0.2.0
+* **Breaking changes**
+  * Removed `initialPath`.
+* Fixed the problem with flutter web.
 ## 0.1.1
 * Now you can use custom transitions between pages.
 * By default the transition is Cupertino on macOS/iOS and Material on android.
