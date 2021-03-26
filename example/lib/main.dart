@@ -16,7 +16,7 @@ class MyApp extends StatelessWidget {
           path: '/',
           builder: (_, __) => HomeView(),
         ),
-        Yeet(
+        Yeet.custom(
           path: r'/user/:id(\d+)',
           builder: (params, _) => UserView(int.parse(params['id']!)),
           transitionsBuilder: (context, animation, secondaryAnimation, child) =>
@@ -110,7 +110,7 @@ class HomeView extends StatelessWidget {
       appBar: AppBar(title: Text('HomeView')),
       body: Center(
         child: ElevatedButton(
-          onPressed: () => context.yeet('/user/${Random().nextInt(10)}'),
+          onPressed: () => context.yeet('user/${Random().nextInt(10)}'),
           child: Text('Random User'),
         ),
       ),

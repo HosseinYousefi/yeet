@@ -45,16 +45,18 @@ class YeeterDelegate extends RouterDelegate<RouteInformation>
           if (node.transitionsBuilder == null) {
             if (UniversalPlatform.isIOS || UniversalPlatform.isMacOS) {
               pages.add(CupertinoPage(
-                  key: key,
-                  child: child,
-                  fullscreenDialog: node.fullscreenDialog,
-                  maintainState: node.maintainState));
+                key: key,
+                child: child,
+                fullscreenDialog: node.fullscreenDialog,
+                maintainState: node.maintainState,
+              ));
             } else {
               pages.add(MaterialPage(
-                  key: key,
-                  child: child,
-                  fullscreenDialog: node.fullscreenDialog,
-                  maintainState: node.maintainState));
+                key: key,
+                child: child,
+                fullscreenDialog: node.fullscreenDialog,
+                maintainState: node.maintainState,
+              ));
             }
           } else {
             pages.add(YeetPage(
@@ -130,7 +132,8 @@ class YeeterDelegate extends RouterDelegate<RouteInformation>
       )!;
       notifyListeners();
     } else {
-      yeet(currentConfiguration!.location! + '/' + path);
+      final location = currentConfiguration!.location!;
+      yeet(location + (location != '/' ? '/' : '') + path);
     }
   }
 
