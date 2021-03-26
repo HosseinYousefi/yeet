@@ -1,3 +1,6 @@
+## 0.3.1
+* Back/Close button works.
+
 ## 0.3.0
 * **Breaking changes**
   * Custom transitions are now available using `Yeet.custom`.

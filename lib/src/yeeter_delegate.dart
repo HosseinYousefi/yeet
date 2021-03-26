@@ -18,9 +18,7 @@ class YeeterDelegate extends RouterDelegate<RouteInformation>
   YeeterDelegate({
     required Yeet yeet,
   })   : _yeet = yeet,
-        _pages = [] {
-    setNewRoutePath(RouteInformation(location: '/'));
-  }
+        _pages = [];
 
   List<Page>? _dfs(
     Yeet node,
@@ -104,12 +102,18 @@ class YeeterDelegate extends RouterDelegate<RouteInformation>
 
   @override
   Widget build(Object context) {
-    return Navigator(
-      key: _navigatorKey,
-      pages: _pages,
-      observers: [_heroController],
-      onPopPage: (route, result) => false,
-    );
+    if (_pages.isNotEmpty) {
+      return Navigator(
+        key: _navigatorKey,
+        pages: _pages,
+        observers: [_heroController],
+        onPopPage: (route, result) {
+          yeet();
+          return false;
+        },
+      );
+    }
+    return Container();
   }
 
   /// Navigates to another path. If no arguments are given, it pops the top page.
@@ -139,23 +143,24 @@ class YeeterDelegate extends RouterDelegate<RouteInformation>
 
   @override
   Future<bool> popRoute() async {
-    if (_pages.length == 1) {
-      return false;
-    }
-    await setNewRoutePath(RouteInformation(
-        location: (_pages[_pages.length - 2].key as ValueKey).value));
-    return true;
+    return Future.sync(() {
+      if (_pages.length == 1) {
+        return false;
+      }
+      yeet((_pages[_pages.length - 2].key as ValueKey).value);
+      return true;
+    });
   }
 
   @override
   Future<void> setNewRoutePath(RouteInformation configuration) {
-    print('loc: ${configuration.location}');
     return Future.sync(() {
       yeet(configuration.location!);
     });
   }
 
   @override
-  RouteInformation? get currentConfiguration =>
-      RouteInformation(location: (_pages.last.key as ValueKey).value);
+  RouteInformation? get currentConfiguration => _pages.isNotEmpty
+      ? RouteInformation(location: (_pages.last.key as ValueKey).value)
+      : null;
 }
