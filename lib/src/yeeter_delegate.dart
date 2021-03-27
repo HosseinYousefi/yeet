@@ -18,7 +18,9 @@ class YeeterDelegate extends RouterDelegate<RouteInformation>
   YeeterDelegate({
     required Yeet yeet,
   })   : _yeet = yeet,
-        _pages = [];
+        _pages = [] {
+    this.yeet('/');
+  }
 
   List<Page>? _dfs(
     Yeet node,
