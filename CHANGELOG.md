@@ -1,3 +1,6 @@
+## 0.3.1+1
+* Fixed a bug when using updating yeet.
+
 ## 0.3.1
 * Back/Close button works.
 
