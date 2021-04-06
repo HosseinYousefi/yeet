@@ -1,3 +1,7 @@
+## 0.3.2
+* Fixed [a bug](https://github.com/HosseinYousefi/yeet/issues/9) that caused the navigator to go to the initial page when hot reloading.
+* Added tests.
+* Fixed a bug when using query parameters.
 ## 0.3.1+1
 * Fixed a bug when using updating yeet.
 

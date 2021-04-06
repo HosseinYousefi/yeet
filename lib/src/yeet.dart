@@ -8,7 +8,6 @@ typedef YeetWidgetBuilder = Widget Function(
 
 /// The class that defines your routing tree structure.
 ///
-///
 /// If several Yeets match a given path the very top one will be chosen.
 class Yeet {
   static YeeterDelegate of(BuildContext context) {
@@ -74,7 +73,7 @@ class Yeet {
     this.maintainState = true,
     this.fullscreenDialog = false,
     this.opaque = true,
-    this.transitionsBuilder,
+    required this.transitionsBuilder,
     this.barrierDismissible = false,
     this.barrierColor,
     this.barrierLabel,
@@ -86,6 +85,10 @@ class Yeet {
     }
     if (path == null && children == null) {
       throw ArgumentError('Both path and children cannot be null.');
+    }
+    if (transitionsBuilder == null) {
+      throw ArgumentError(
+          'transitionsBuilder cannot be null in a custom yeet.');
     }
     if (path != null) {
       regExp = pathToRegExp(
