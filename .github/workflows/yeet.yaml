@@ -1,0 +1,24 @@
+name: flutter_bloc
+
+on:
+  push:
+  pull_request:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - uses: subosito/flutter-action@v1.4.0
+      - name: Install Dependencies
+        run: flutter packages get
+      - name: Analyze
+        run: flutter analyze lib test example
+      - name: Run tests
+        run: flutter test --no-pub --coverage --test-randomize-ordering-seed random
+      - uses: VeryGoodOpenSource/very_good_coverage@v1.1.1
+        with:
+          path: "./coverage/lcov.info"
+          min_coverage: 50
+      - name: Upload coverage to Codecov
+        uses: codecov/codecov-action@v1

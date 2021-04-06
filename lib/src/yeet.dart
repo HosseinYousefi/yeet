@@ -73,7 +73,7 @@ class Yeet {
     this.maintainState = true,
     this.fullscreenDialog = false,
     this.opaque = true,
-    this.transitionsBuilder,
+    required this.transitionsBuilder,
     this.barrierDismissible = false,
     this.barrierColor,
     this.barrierLabel,
@@ -85,6 +85,10 @@ class Yeet {
     }
     if (path == null && children == null) {
       throw ArgumentError('Both path and children cannot be null.');
+    }
+    if (transitionsBuilder == null) {
+      throw ArgumentError(
+          'transitionsBuilder cannot be null in a custom yeet.');
     }
     if (path != null) {
       regExp = pathToRegExp(

@@ -10,10 +10,9 @@
 A dank way to navigate.
 
 [![Pub Version](https://img.shields.io/pub/v/yeet)](https://pub.dev/packages/yeet)
+[![codecov](https://codecov.io/gh/HosseinYousefi/yeet/branch/master/graph/badge.svg?token=FNZIGVDYVW)](https://codecov.io/gh/HosseinYousefi/yeet)
 
 ---
-
-**Still experimental!**
 
 ## How to yeet?
 
@@ -23,7 +22,7 @@ A dank way to navigate.
 dependencies:
   flutter:
     sdk: flutter
-  yeet: ^0.3.1
+  yeet: ^0.3.2
 ```
 
 1. Define your yeets:

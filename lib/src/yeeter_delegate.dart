@@ -11,13 +11,14 @@ final _heroController = HeroController();
 List<Page> _pages = [];
 
 /// Put this as your routerDelegate in [MaterialApp.router].
+
 class YeeterDelegate extends RouterDelegate<String> with ChangeNotifier {
   final Yeet _yeet;
 
   YeeterDelegate({
     required Yeet yeet,
   }) : _yeet = yeet {
-    this.yeet('/');
+    this.yeet(currentConfiguration);
   }
 
   List<Page>? _dfs(
@@ -28,17 +29,18 @@ class YeeterDelegate extends RouterDelegate<String> with ChangeNotifier {
     Map<String, String> query,
   ) {
     final pages = <Page>[];
-
     if (node.regExp != null) {
       // Handling relative and non-relative paths correctly
       final isRootPath = node.path!.startsWith('/');
       if (isRootPath) matchedTill = 0;
       final match = node.regExp!.matchAsPrefix(path.substring(matchedTill));
-
       if (match != null) {
+        final isFinal = matchedTill + match.end == path.length;
         params.addAll(extract(node.parameters, match));
         if (node.builder != null) {
-          final key = ValueKey(path.substring(0, matchedTill + match.end));
+          final queryPath = Uri(queryParameters: query).query;
+          final key = ValueKey(path.substring(0, matchedTill + match.end) +
+              (isFinal && queryPath.isNotEmpty ? '?$queryPath' : ''));
           final child = node.builder!(params, query);
           if (node.transitionsBuilder == null) {
             if (UniversalPlatform.isIOS || UniversalPlatform.isMacOS) {
@@ -72,11 +74,13 @@ class YeeterDelegate extends RouterDelegate<String> with ChangeNotifier {
             ));
           }
         }
-        if (matchedTill + match.end == path.length) {
+        if (isFinal) {
           // The matching is final.
           return pages;
         }
-        if (path[matchedTill + match.end] == '/') {
+        if (path[matchedTill + match.end - 1] == '/') {
+          matchedTill += match.end;
+        } else if (path[matchedTill + match.end] == '/') {
           matchedTill += match.end + 1;
         } else {
           matchedTill = 0;
@@ -136,7 +140,7 @@ class YeeterDelegate extends RouterDelegate<String> with ChangeNotifier {
       )!;
       notifyListeners();
     } else {
-      final location = currentConfiguration ?? '';
+      final location = Uri.parse(currentConfiguration).path;
       yeet(location + (location != '/' ? '/' : '') + path);
     }
   }
@@ -160,6 +164,6 @@ class YeeterDelegate extends RouterDelegate<String> with ChangeNotifier {
   }
 
   @override
-  String? get currentConfiguration =>
-      _pages.isNotEmpty ? (_pages.last.key as ValueKey).value : null;
+  String get currentConfiguration =>
+      _pages.isNotEmpty ? (_pages.last.key as ValueKey).value : '/';
 }
