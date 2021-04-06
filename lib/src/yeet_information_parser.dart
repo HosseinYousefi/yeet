@@ -1,14 +1,13 @@
+import 'package:flutter/foundation.dart';
 import 'package:flutter/widgets.dart';
 
 /// Put this as your routeInformationParser in [MaterialApp.router].
-class YeetInformationParser extends RouteInformationParser<RouteInformation> {
+class YeetInformationParser extends RouteInformationParser<String> {
   @override
-  Future<RouteInformation> parseRouteInformation(
-          RouteInformation routeInformation) async =>
-      routeInformation;
+  Future<String> parseRouteInformation(RouteInformation routeInformation) =>
+      SynchronousFuture(routeInformation.location ?? '/');
 
   @override
-  RouteInformation? restoreRouteInformation(
-          RouteInformation routeInformation) =>
-      routeInformation;
+  RouteInformation? restoreRouteInformation(String location) =>
+      RouteInformation(location: location);
 }

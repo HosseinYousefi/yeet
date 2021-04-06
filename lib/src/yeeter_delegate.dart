@@ -8,17 +8,15 @@ import 'yeet.dart';
 
 final GlobalKey<NavigatorState> _navigatorKey = GlobalKey<NavigatorState>();
 final _heroController = HeroController();
+List<Page> _pages = [];
 
 /// Put this as your routerDelegate in [MaterialApp.router].
-class YeeterDelegate extends RouterDelegate<RouteInformation>
-    with ChangeNotifier {
+class YeeterDelegate extends RouterDelegate<String> with ChangeNotifier {
   final Yeet _yeet;
-  List<Page> _pages;
 
   YeeterDelegate({
     required Yeet yeet,
-  })   : _yeet = yeet,
-        _pages = [] {
+  }) : _yeet = yeet {
     this.yeet('/');
   }
 
@@ -138,7 +136,7 @@ class YeeterDelegate extends RouterDelegate<RouteInformation>
       )!;
       notifyListeners();
     } else {
-      final location = currentConfiguration!.location!;
+      final location = currentConfiguration ?? '';
       yeet(location + (location != '/' ? '/' : '') + path);
     }
   }
@@ -155,14 +153,13 @@ class YeeterDelegate extends RouterDelegate<RouteInformation>
   }
 
   @override
-  Future<void> setNewRoutePath(RouteInformation configuration) {
+  Future<void> setNewRoutePath(String path) {
     return Future.sync(() {
-      yeet(configuration.location!);
+      yeet(path);
     });
   }
 
   @override
-  RouteInformation? get currentConfiguration => _pages.isNotEmpty
-      ? RouteInformation(location: (_pages.last.key as ValueKey).value)
-      : null;
+  String? get currentConfiguration =>
+      _pages.isNotEmpty ? (_pages.last.key as ValueKey).value : null;
 }
