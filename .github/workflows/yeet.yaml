@@ -20,5 +20,6 @@ jobs:
         with:
           path: "./coverage/lcov.info"
           min_coverage: 50
+          exclude: "**/*.freezed.dart"
       - name: Upload coverage to Codecov
         uses: codecov/codecov-action@v1
