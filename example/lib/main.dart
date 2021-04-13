@@ -14,26 +14,29 @@ class MyApp extends StatelessWidget {
       children: [
         Yeet(
           path: '/',
-          builder: (_, __) => HomeView(),
+          builder: (_) => HomeView(),
         ),
-        Yeet.custom(
+        Yeet(
           path: r'/user/:id(\d+)',
-          builder: (params, _) => UserView(int.parse(params['id']!)),
-          transitionsBuilder: (context, animation, secondaryAnimation, child) =>
-              FadeTransition(
-            opacity: animation,
-            child: child,
+          builder: (context) => UserView(int.parse(context.params['id']!)),
+          transition: YeetTransition.custom(
+            transitionsBuilder:
+                (context, animation, secondaryAnimation, child) =>
+                    FadeTransition(
+              opacity: animation,
+              child: child,
+            ),
           ),
           children: [
             Yeet(
               path: 'posts',
-              builder: (params, _) => PostsView(int.parse(params['id']!)),
+              builder: (context) => PostsView(int.parse(context.params['id']!)),
             )
           ],
         ),
         Yeet(
           path: ':_(.*)',
-          builder: (_, __) => NotFoundView(),
+          builder: (_) => NotFoundView(),
         ),
       ],
     );

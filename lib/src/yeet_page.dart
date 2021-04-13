@@ -1,6 +1,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
+import 'package:yeet/src/yeet_transition.dart';
 
 class YeetPage extends Page<dynamic> {
   final bool maintainState;

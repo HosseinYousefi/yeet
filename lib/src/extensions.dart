@@ -7,4 +7,10 @@ extension YeetContext on BuildContext {
   void yeet([String? path]) {
     Yeet.of(this).yeet(path);
   }
+
+  Map<String, String> get params => Yeet.of(this).params;
+
+  Map<String, String> get queryParams => Yeet.of(this).queryParams;
+
+  String get currentPath => Yeet.of(this).currentConfiguration;
 }
