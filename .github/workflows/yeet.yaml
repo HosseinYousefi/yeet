@@ -16,6 +16,10 @@ jobs:
         run: flutter analyze lib test example
       - name: Run tests
         run: flutter test --no-pub --coverage --test-randomize-ordering-seed random
+      - name: Remove generated files from coverage
+        run: |
+          flutter pub global activate remove_from_coverage 
+          remove_from_coverage -f coverage/lcov.info -r '.freezed.dart$'
       - uses: VeryGoodOpenSource/very_good_coverage@v1.1.1
         with:
           path: "./coverage/lcov.info"
