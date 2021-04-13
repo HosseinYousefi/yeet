@@ -1,7 +1,17 @@
+## 0.4.0
+* **Breaking changes**
+  * `Yeet.custom()` has been removed, instead use `transition: YeetTransition.custom()`.
+  * `builder` in `Yeet` now only has one parameter: `context`. You can still access `params` and `queryParams` by prepending it with `context.` like `context.params`.
+* `BuildContext` now has more getters
+  * `.params` for path parameters
+  * `.queryParams` for query parameters
+  * `.currentPath` to get the current path
+
 ## 0.3.2
 * Fixed [a bug](https://github.com/HosseinYousefi/yeet/issues/9) that caused the navigator to go to the initial page when hot reloading.
 * Added tests.
 * Fixed a bug when using query parameters.
+
 ## 0.3.1+1
 * Fixed a bug when using updating yeet.
 

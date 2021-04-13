@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:yeet/src/yeet_transition.dart';
 import 'package:yeet/yeet.dart';
 
 void main() {
@@ -8,78 +9,78 @@ void main() {
     children: [
       Yeet(
         path: '/',
-        builder: (_, __) => Builder(
-          builder: (context) {
-            return Column(
-              children: [
-                Text('/'),
-                ElevatedButton(
-                  onPressed: () {
-                    context.yeet('/a');
-                  },
-                  child: Text('Complete path'),
-                ),
-                ElevatedButton(
-                  onPressed: () {
-                    context.yeet('b');
-                  },
-                  child: Text('Relative path'),
-                ),
-                ElevatedButton(
-                  onPressed: () {
-                    context.yeet('/c');
-                  },
-                  child: Text('Relative path in yeet tree'),
-                ),
-                ElevatedButton(
-                  onPressed: () {
-                    context.yeet('/d/hello/f');
-                  },
-                  child: Text('Path param'),
-                ),
-                ElevatedButton(
-                  onPressed: () {
-                    context.yeet('/d/hello/f/g?a=3&b=5');
-                  },
-                  child: Text('Query param'),
-                ),
-              ],
-            );
-          },
+        builder: (context) => Column(
+          children: [
+            Text('/'),
+            ElevatedButton(
+              onPressed: () {
+                context.yeet('/a');
+              },
+              child: Text('Complete path'),
+            ),
+            ElevatedButton(
+              onPressed: () {
+                context.yeet('b');
+              },
+              child: Text('Relative path'),
+            ),
+            ElevatedButton(
+              onPressed: () {
+                context.yeet('/c');
+              },
+              child: Text('Relative path in yeet tree'),
+            ),
+            ElevatedButton(
+              onPressed: () {
+                context.yeet('/d/hello/f');
+              },
+              child: Text('Path param'),
+            ),
+            ElevatedButton(
+              onPressed: () {
+                context.yeet('/d/hello/f/g?a=3&b=5');
+              },
+              child: Text('Query param'),
+            ),
+          ],
         ),
         children: [
           Yeet(
             path: '/a',
-            builder: (_, __) => Text('a'),
+            builder: (_) => Text('a'),
           ),
           Yeet(
             path: '/b',
-            builder: (_, __) => Text('b'),
+            builder: (_) => Text('b'),
           ),
           Yeet(
             path: 'c',
-            builder: (_, __) => Text('c'),
+            builder: (_) => Text('c'),
           ),
           Yeet(
             path: 'd/:any/f',
-            builder: (params, __) => Text(params['any']!),
+            builder: (context) => Text(context.params['any']!),
             children: [
               Yeet(
+                // Building with no animation
+                transition: YeetTransition.custom(
+                  transitionsBuilder:
+                      (context, animation, secondaryAnimation, child) => child,
+                ),
                 path: 'g',
-                builder: (_, qParams) => Builder(
-                  builder: (context) => Column(
-                    children: [
-                      Text('${qParams['a']!} ${qParams['b']!}'),
-                      ElevatedButton(
-                        onPressed: context.yeet,
-                        child: Text('back'),
-                      ),
-                      ElevatedButton(
-                        onPressed: () => context.yeet('../../../../c'),
-                        child: Text('relative c'),
-                      ),
-                    ],
-                  ),
+                builder: (context) => Column(
+                  children: [
+                    Text(
+                        '${context.queryParams['a']!} ${context.queryParams['b']!}'),
+                    ElevatedButton(
+                      onPressed: context.yeet,
+                      child: Text('back'),
+                    ),
+                    ElevatedButton(
+                      onPressed: () => context.yeet('../../../../c'),
+                      child: Text('relative c'),
+                    ),
+                  ],
                 ),
               ),
             ],
@@ -163,6 +164,19 @@ void main() {
     await tester.pumpAndSettle();
 
     final finder = find.text('hello');
+
+    expect(finder, findsOneWidget);
+  });
+
+  testWidgets('query parameters', (tester) async {
+    await tester.pumpWidget(MaterialApp.router(
+      routeInformationParser: YeetInformationParser(),
+      routerDelegate: YeeterDelegate(yeet: yeet),
+    ));
+    await tester.tap(find.widgetWithText(ElevatedButton, 'Query param'));
+    await tester.pumpAndSettle();
+
+    final finder = find.text('3 5');
 
     expect(finder, findsOneWidget);
   });

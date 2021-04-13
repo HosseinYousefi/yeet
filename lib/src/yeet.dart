@@ -3,8 +3,9 @@ import 'package:flutter/widgets.dart';
 import 'package:path_to_regexp/path_to_regexp.dart';
 import 'package:yeet/yeet.dart';
 
-typedef YeetWidgetBuilder = Widget Function(
-    Map<String, String> params, Map<String, String> query);
+import 'yeet_transition.dart';
+
+typedef YeetWidgetBuilder = Widget Function(BuildContext context);
 
 /// The class that defines your routing tree structure.
 ///
@@ -31,11 +32,10 @@ class Yeet {
   /// A list of subyeets of this yeet.
   final List<Yeet>? children;
 
-  /// The transition duration when yeeting into this path.
-  final Duration transitionDuration;
-
-  /// The transition duration when yeeting out of this path.
-  final Duration reverseTransitionDuration;
+  /// The default transition of this yeet.
+  ///
+  /// Defaults to [YeetTransition.adaptive].
+  final YeetTransition transition;
 
   /// Whether or not to maintain the state of this yeet.
   ///
@@ -48,75 +48,18 @@ class Yeet {
   /// Defaults to false.
   final bool fullscreenDialog;
 
-  /// Custom transition builder for pages.
-  RouteTransitionsBuilder? transitionsBuilder;
-
-  /// Whether or not the background of the page is opaque.
-  ///
-  /// Defaults to true.
-  final bool opaque;
-
-  final bool barrierDismissible;
-
-  final Color? barrierColor;
-
-  final String? barrierLabel;
-
   final List<String> parameters;
   late final RegExp? regExp;
-
-  Yeet.custom({
-    this.path,
-    bool caseSensitive = true,
-    this.builder,
-    this.children,
-    this.maintainState = true,
-    this.fullscreenDialog = false,
-    this.opaque = true,
-    required this.transitionsBuilder,
-    this.barrierDismissible = false,
-    this.barrierColor,
-    this.barrierLabel,
-    this.reverseTransitionDuration = const Duration(milliseconds: 300),
-    this.transitionDuration = const Duration(milliseconds: 300),
-  }) : parameters = [] {
-    if (children != null && children!.isEmpty) {
-      throw ArgumentError('children cannot be empty');
-    }
-    if (path == null && children == null) {
-      throw ArgumentError('Both path and children cannot be null.');
-    }
-    if (transitionsBuilder == null) {
-      throw ArgumentError(
-          'transitionsBuilder cannot be null in a custom yeet.');
-    }
-    if (path != null) {
-      regExp = pathToRegExp(
-        path!,
-        parameters: parameters,
-        prefix: true,
-        caseSensitive: caseSensitive,
-      );
-    } else {
-      regExp = null;
-    }
-  }
 
   Yeet({
     this.path,
     bool caseSensitive = true,
-    this.builder,
-    this.children,
     this.maintainState = true,
     this.fullscreenDialog = false,
-  })  : parameters = [],
-        opaque = true,
-        barrierDismissible = false,
-        reverseTransitionDuration = const Duration(milliseconds: 300),
-        transitionDuration = const Duration(milliseconds: 300),
-        barrierColor = null,
-        barrierLabel = null,
-        transitionsBuilder = null {
+    this.builder,
+    this.children,
+    this.transition = const YeetTransition.adaptive(),
+  }) : parameters = [] {
     if (children != null && children!.isEmpty) {
       throw ArgumentError('children cannot be empty');
     }
