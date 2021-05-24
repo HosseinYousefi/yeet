@@ -51,7 +51,26 @@ void main() {
           ),
           Yeet(
             path: '/b',
-            builder: (_) => Text('b'),
+            builder: (context) => Scaffold(
+              body: Column(
+                children: [
+                  Text('b'),
+                  ElevatedButton(
+                    onPressed: () => context.yeet('/b/h'),
+                    child: Text('h'),
+                  ),
+                ],
+              ),
+            ),
+            children: [
+              Yeet(
+                path: 'h',
+                builder: (_) => Scaffold(
+                  appBar: AppBar(title: Text('H')),
+                  body: Text('h'),
+                ),
+              )
+            ],
           ),
           Yeet(
             path: 'c',
@@ -194,5 +213,23 @@ void main() {
     final finder = find.text('c');
 
     expect(finder, findsOneWidget);
+  });
+
+  testWidgets('app bar back button works', (tester) async {
+    await tester.pumpWidget(MaterialApp.router(
+      routeInformationParser: YeetInformationParser(),
+      routerDelegate: YeeterDelegate(yeet: yeet),
+    ));
+    await tester.tap(find.widgetWithText(ElevatedButton, 'Relative path'));
+    await tester.pumpAndSettle();
+    await tester.tap(find.widgetWithText(ElevatedButton, 'h'));
+    await tester.pumpAndSettle();
+
+    expect(find.text('h'), findsOneWidget);
+    final backButton = find.byType(BackButton);
+    expect(backButton, findsOneWidget);
+    await tester.tap(backButton);
+    await tester.pumpAndSettle();
+    expect(find.text('b'), findsOneWidget);
   });
 }
