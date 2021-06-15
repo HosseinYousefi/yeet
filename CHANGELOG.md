@@ -1,3 +1,6 @@
+## 0.4.1
+* Added `yeetOnTop`, which is similar to yeet but preserves the previous stack of pages and just merges it with the new ones.
+
 ## 0.4.0
 * **Breaking changes**
   * `Yeet.custom()` has been removed, instead use `transition: YeetTransition.custom()`.

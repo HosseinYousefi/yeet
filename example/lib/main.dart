@@ -35,6 +35,10 @@ class MyApp extends StatelessWidget {
           ],
         ),
         Yeet(
+          path: '/dialog',
+          builder: (_) => DialogView(),
+        ),
+        Yeet(
           path: ':_(.*)',
           builder: (_) => NotFoundView(),
         ),
@@ -43,6 +47,18 @@ class MyApp extends StatelessWidget {
     return MaterialApp.router(
       routeInformationParser: YeetInformationParser(),
       routerDelegate: YeeterDelegate(yeet: yeet),
+    );
+  }
+}
+
+class DialogView extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(title: Text('Dialog')),
+      body: Center(
+        child: Text('Dialog!'),
+      ),
     );
   }
 }
@@ -96,11 +112,21 @@ class PostsView extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(title: Text('Posts of user #$id')),
-      body: Center(
-        child: ElevatedButton(
-          onPressed: () => context.yeet(),
-          child: Text('Back'),
-        ),
+      body: Column(
+        children: [
+          Center(
+            child: ElevatedButton(
+              onPressed: () => context.yeet(),
+              child: Text('Back'),
+            ),
+          ),
+          Center(
+            child: ElevatedButton(
+              onPressed: () => context.yeetOnTop('/dialog'),
+              child: Text('Show Dialog'),
+            ),
+          ),
+        ],
       ),
     );
   }

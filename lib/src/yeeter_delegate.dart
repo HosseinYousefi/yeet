@@ -175,6 +175,29 @@ class YeeterDelegate extends RouterDelegate<String> with ChangeNotifier {
     }
   }
 
+  void yeetOnTop(String path) {
+    _params = {};
+    _queryParams = {};
+    final uri = Uri.parse(path);
+    _queryParams = uri.queryParameters;
+    if (path.startsWith('/')) {
+      final newPages = _dfs(
+        _yeet,
+        uri.path,
+        0,
+      )!;
+      _pages = [
+        ..._pages,
+        ...newPages.where(
+            (element) => _pages.where((e) => e.key == element.key).isEmpty),
+      ];
+      notifyListeners();
+    } else {
+      final location = Uri.parse(currentConfiguration).path;
+      yeetOnTop(location + (location != '/' ? '/' : '') + path);
+    }
+  }
+
   @override
   Future<bool> popRoute() async {
     return Future.sync(() {
