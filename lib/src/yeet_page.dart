@@ -15,6 +15,7 @@ class YeetPage extends Page<dynamic> {
   final Widget child;
 
   YeetPage({
+    String? name,
     LocalKey? key,
     this.maintainState = true,
     this.fullscreenDialog = false,
@@ -26,7 +27,7 @@ class YeetPage extends Page<dynamic> {
     this.transitionDuration = const Duration(milliseconds: 300),
     required this.transitionsBuilder,
     required this.child,
-  }) : super(key: key);
+  }) : super(key: key, name: name);
 
   @override
   Route createRoute(BuildContext context) {

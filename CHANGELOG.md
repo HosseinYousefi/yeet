@@ -1,5 +1,7 @@
+## 0.4.2
+* Added `context.push`, which only pushes the top page on top of the stack.
 ## 0.4.1
-* Added `yeetOnTop`, which is similar to yeet but preserves the previous stack of pages and just merges it with the new ones.
+* Added `context.yeetOnTop`, which is similar to yeet but preserves the previous stack of pages and just merges it with the new ones.
 
 ## 0.4.0
 * **Breaking changes**

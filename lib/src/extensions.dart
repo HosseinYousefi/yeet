@@ -12,6 +12,10 @@ extension YeetContext on BuildContext {
     Yeet.of(this).yeetOnTop(path);
   }
 
+  void push(String path) {
+    Yeet.of(this).push(path);
+  }
+
   Map<String, String> get params => Yeet.of(this).params;
 
   Map<String, String> get queryParams => Yeet.of(this).queryParams;

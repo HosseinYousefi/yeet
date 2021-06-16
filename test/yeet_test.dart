@@ -8,6 +8,13 @@ void main() {
   final yeet = Yeet(
     children: [
       Yeet(
+        path: '/dialog',
+        builder: (context) => ElevatedButton(
+          onPressed: () => context.yeet(),
+          child: Text('Close Dialog'),
+        ),
+      ),
+      Yeet(
         path: '/',
         builder: (context) => Column(
           children: [
@@ -216,6 +223,24 @@ void main() {
   });
 
   testWidgets('app bar back button works', (tester) async {
+    await tester.pumpWidget(MaterialApp.router(
+      routeInformationParser: YeetInformationParser(),
+      routerDelegate: YeeterDelegate(yeet: yeet),
+    ));
+    await tester.tap(find.widgetWithText(ElevatedButton, 'Relative path'));
+    await tester.pumpAndSettle();
+    await tester.tap(find.widgetWithText(ElevatedButton, 'h'));
+    await tester.pumpAndSettle();
+
+    expect(find.text('h'), findsOneWidget);
+    final backButton = find.byType(BackButton);
+    expect(backButton, findsOneWidget);
+    await tester.tap(backButton);
+    await tester.pumpAndSettle();
+    expect(find.text('b'), findsOneWidget);
+  });
+
+  testWidgets('push and yeetOnTop', (tester) async {
     await tester.pumpWidget(MaterialApp.router(
       routeInformationParser: YeetInformationParser(),
       routerDelegate: YeeterDelegate(yeet: yeet),

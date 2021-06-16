@@ -4,11 +4,12 @@ import 'package:path_to_regexp/path_to_regexp.dart';
 import 'package:universal_platform/universal_platform.dart';
 import 'package:yeet/src/yeet_page.dart';
 
+import 'extended_page.dart';
 import 'yeet.dart';
 
 final GlobalKey<NavigatorState> _navigatorKey = GlobalKey<NavigatorState>();
 final _heroController = HeroController();
-List<Page> _pages = [];
+List<ExtendedPage> _pages = [];
 
 /// Put this as your routerDelegate in [MaterialApp.router].
 
@@ -31,65 +32,68 @@ class YeeterDelegate extends RouterDelegate<String> with ChangeNotifier {
     return Builder(builder: node.builder!);
   }
 
-  static Page _makePage(LocalKey key, Yeet node) {
+  static ExtendedPage _makePage(String path, Yeet node) {
     final child = _makeChild(node);
-    return node.transition.when(
-      adaptive: () => (UniversalPlatform.isIOS || UniversalPlatform.isMacOS)
-          ? CupertinoPage(
-              key: key,
-              child: child,
-              fullscreenDialog: node.fullscreenDialog,
-              maintainState: node.maintainState,
-            )
-          : MaterialPage(
-              key: key,
-              child: child,
-              fullscreenDialog: node.fullscreenDialog,
-              maintainState: node.maintainState,
-            ),
-      material: () => MaterialPage(
-        key: key,
-        child: child,
-        fullscreenDialog: node.fullscreenDialog,
-        maintainState: node.maintainState,
+    return ExtendedPage(
+      page: node.transition.when(
+        adaptive: () => (UniversalPlatform.isIOS || UniversalPlatform.isMacOS)
+            ? CupertinoPage(
+                key: ValueKey(path),
+                child: child,
+                fullscreenDialog: node.fullscreenDialog,
+                maintainState: node.maintainState,
+              )
+            : MaterialPage(
+                key: ValueKey(path),
+                child: child,
+                fullscreenDialog: node.fullscreenDialog,
+                maintainState: node.maintainState,
+              ),
+        material: () => MaterialPage(
+          key: ValueKey(path),
+          child: child,
+          fullscreenDialog: node.fullscreenDialog,
+          maintainState: node.maintainState,
+        ),
+        cupertino: () => CupertinoPage(
+          key: ValueKey(path),
+          child: child,
+          fullscreenDialog: node.fullscreenDialog,
+          maintainState: node.maintainState,
+        ),
+        custom: (
+          transitionsBuilder,
+          opaque,
+          barrierDismissible,
+          reverseTransitionDuration,
+          transitionDuration,
+          barrierColor,
+          barrierLabel,
+        ) =>
+            YeetPage(
+          key: ValueKey(path),
+          transitionsBuilder: transitionsBuilder,
+          fullscreenDialog: node.fullscreenDialog,
+          maintainState: node.maintainState,
+          opaque: opaque,
+          barrierDismissible: barrierDismissible,
+          reverseTransitionDuration: reverseTransitionDuration,
+          transitionDuration: transitionDuration,
+          barrierColor: barrierColor,
+          barrierLabel: barrierLabel,
+          child: child,
+        ),
       ),
-      cupertino: () => CupertinoPage(
-        key: key,
-        child: child,
-        fullscreenDialog: node.fullscreenDialog,
-        maintainState: node.maintainState,
-      ),
-      custom: (
-        transitionsBuilder,
-        opaque,
-        barrierDismissible,
-        reverseTransitionDuration,
-        transitionDuration,
-        barrierColor,
-        barrierLabel,
-      ) =>
-          YeetPage(
-        key: key,
-        transitionsBuilder: transitionsBuilder,
-        fullscreenDialog: node.fullscreenDialog,
-        maintainState: node.maintainState,
-        opaque: opaque,
-        barrierDismissible: barrierDismissible,
-        reverseTransitionDuration: reverseTransitionDuration,
-        transitionDuration: transitionDuration,
-        barrierColor: barrierColor,
-        barrierLabel: barrierLabel,
-        child: child,
-      ),
+      path: path,
     );
   }
 
-  List<Page>? _dfs(
+  List<ExtendedPage>? _dfs(
     Yeet node,
     String path,
     int matchedTill,
   ) {
-    final pages = <Page>[];
+    final pages = <ExtendedPage>[];
     if (node.regExp != null) {
       // Handling relative and non-relative paths correctly
       final isRootPath = node.path!.startsWith('/');
@@ -100,9 +104,9 @@ class YeeterDelegate extends RouterDelegate<String> with ChangeNotifier {
         _params.addAll(extract(node.parameters, match));
         if (node.builder != null) {
           final queryPath = Uri(queryParameters: _queryParams).query;
-          final key = ValueKey(path.substring(0, matchedTill + match.end) +
-              (isFinal && queryPath.isNotEmpty ? '?$queryPath' : ''));
-          pages.add(_makePage(key, node));
+          final pagePath = path.substring(0, matchedTill + match.end) +
+              (isFinal && queryPath.isNotEmpty ? '?$queryPath' : '');
+          pages.add(_makePage(pagePath, node));
         }
         if (isFinal) {
           // The matching is final.
@@ -138,7 +142,7 @@ class YeeterDelegate extends RouterDelegate<String> with ChangeNotifier {
     if (_pages.isNotEmpty) {
       return Navigator(
         key: _navigatorKey,
-        pages: _pages,
+        pages: _pages.map((e) => e.page).toList(),
         observers: [_heroController],
         onPopPage: (route, result) {
           yeet();
@@ -157,7 +161,7 @@ class YeeterDelegate extends RouterDelegate<String> with ChangeNotifier {
       if (_pages.length == 1) {
         return;
       }
-      yeet((_pages[_pages.length - 2].key as ValueKey).value);
+      yeet(_pages[_pages.length - 2].path);
       return;
     }
     final uri = Uri.parse(path);
@@ -176,10 +180,8 @@ class YeeterDelegate extends RouterDelegate<String> with ChangeNotifier {
   }
 
   void yeetOnTop(String path) {
-    _params = {};
-    _queryParams = {};
     final uri = Uri.parse(path);
-    _queryParams = uri.queryParameters;
+    _queryParams = {..._queryParams, ...uri.queryParameters};
     if (path.startsWith('/')) {
       final newPages = _dfs(
         _yeet,
@@ -189,7 +191,7 @@ class YeeterDelegate extends RouterDelegate<String> with ChangeNotifier {
       _pages = [
         ..._pages,
         ...newPages.where(
-            (element) => _pages.where((e) => e.key == element.key).isEmpty),
+            (element) => _pages.where((e) => e.path == element.path).isEmpty),
       ];
       notifyListeners();
     } else {
@@ -198,13 +200,37 @@ class YeeterDelegate extends RouterDelegate<String> with ChangeNotifier {
     }
   }
 
+  void push(String path) {
+    final uri = Uri.parse(path);
+    _queryParams = {..._queryParams, ...uri.queryParameters};
+    if (path.startsWith('/')) {
+      final newPages = _dfs(
+        _yeet,
+        uri.path,
+        0,
+      )!;
+      _pages = [
+        ..._pages,
+        newPages.last,
+      ];
+      notifyListeners();
+    } else {
+      final location = Uri.parse(currentConfiguration).path;
+      yeetOnTop(location + (location != '/' ? '/' : '') + path);
+    }
+  }
+
+  void changePath(String path) {
+    _pages[_pages.length - 1] = _pages.last.copyWith(path: path);
+  }
+
   @override
   Future<bool> popRoute() async {
     return Future.sync(() {
       if (_pages.length == 1) {
         return false;
       }
-      yeet((_pages[_pages.length - 2].key as ValueKey).value);
+      yeet(_pages[_pages.length - 2].path);
       return true;
     });
   }
@@ -217,6 +243,5 @@ class YeeterDelegate extends RouterDelegate<String> with ChangeNotifier {
   }
 
   @override
-  String get currentConfiguration =>
-      _pages.isNotEmpty ? (_pages.last.key as ValueKey).value : '/';
+  String get currentConfiguration => _pages.isNotEmpty ? _pages.last.path : '/';
 }
