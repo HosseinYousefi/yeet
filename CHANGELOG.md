@@ -1,3 +1,6 @@
+## 0.4.3
+* Added `context.changePath`, to change the path of the top page to reflect the state better.
+
 ## 0.4.2
 * Added `context.push`, which only pushes the top page on top of the stack.
 ## 0.4.1

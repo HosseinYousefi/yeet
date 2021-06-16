@@ -222,6 +222,7 @@ class YeeterDelegate extends RouterDelegate<String> with ChangeNotifier {
 
   void changePath(String path) {
     _pages[_pages.length - 1] = _pages.last.copyWith(path: path);
+    notifyListeners();
   }
 
   @override

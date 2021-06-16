@@ -126,6 +126,12 @@ class PostsView extends StatelessWidget {
               child: Text('Show Dialog'),
             ),
           ),
+          Center(
+            child: ElevatedButton(
+              onPressed: () => context.changePath('/something'),
+              child: Text('Change path'),
+            ),
+          ),
         ],
       ),
     );

@@ -21,6 +21,18 @@ void main() {
             Text('/'),
             ElevatedButton(
               onPressed: () {
+                context.push('/dialog');
+              },
+              child: Text('Show Dialog'),
+            ),
+            ElevatedButton(
+              onPressed: () {
+                context.push('/dialog');
+              },
+              child: Text('Yeet Dialog on Top'),
+            ),
+            ElevatedButton(
+              onPressed: () {
                 context.yeet('/a');
               },
               child: Text('Complete path'),
@@ -240,21 +252,33 @@ void main() {
     expect(find.text('b'), findsOneWidget);
   });
 
-  testWidgets('push and yeetOnTop', (tester) async {
+  testWidgets('push', (tester) async {
     await tester.pumpWidget(MaterialApp.router(
       routeInformationParser: YeetInformationParser(),
       routerDelegate: YeeterDelegate(yeet: yeet),
     ));
-    await tester.tap(find.widgetWithText(ElevatedButton, 'Relative path'));
-    await tester.pumpAndSettle();
-    await tester.tap(find.widgetWithText(ElevatedButton, 'h'));
+    await tester.tap(find.widgetWithText(ElevatedButton, 'Show Dialog'));
     await tester.pumpAndSettle();
 
-    expect(find.text('h'), findsOneWidget);
-    final backButton = find.byType(BackButton);
-    expect(backButton, findsOneWidget);
-    await tester.tap(backButton);
+    expect(find.text('Close Dialog'), findsOneWidget);
+    await tester.tap(find.widgetWithText(ElevatedButton, 'Close Dialog'));
     await tester.pumpAndSettle();
-    expect(find.text('b'), findsOneWidget);
+
+    expect(find.text('/'), findsOneWidget);
+  });
+
+  testWidgets('yeetOnTop', (tester) async {
+    await tester.pumpWidget(MaterialApp.router(
+      routeInformationParser: YeetInformationParser(),
+      routerDelegate: YeeterDelegate(yeet: yeet),
+    ));
+    await tester.tap(find.widgetWithText(ElevatedButton, 'Yeet Dialog on Top'));
+    await tester.pumpAndSettle();
+
+    expect(find.text('Close Dialog'), findsOneWidget);
+    await tester.tap(find.widgetWithText(ElevatedButton, 'Close Dialog'));
+    await tester.pumpAndSettle();
+
+    expect(find.text('/'), findsOneWidget);
   });
 }
