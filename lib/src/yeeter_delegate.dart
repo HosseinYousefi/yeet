@@ -216,7 +216,7 @@ class YeeterDelegate extends RouterDelegate<String> with ChangeNotifier {
       notifyListeners();
     } else {
       final location = Uri.parse(currentConfiguration).path;
-      yeetOnTop(location + (location != '/' ? '/' : '') + path);
+      push(location + (location != '/' ? '/' : '') + path);
     }
   }
 

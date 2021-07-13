@@ -1,4 +1,7 @@
 ## 0.4.3
+* Fixed a bug in `context.push`.
+
+## 0.4.3
 * Added `context.changePath`, to change the path of the top page to reflect the state better.
 
 ## 0.4.2

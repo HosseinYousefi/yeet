@@ -23,7 +23,7 @@ A dank way to navigate.
 dependencies:
   flutter:
     sdk: flutter
-  yeet: ^0.4.3
+  yeet: ^0.4.4
 ```
 
 1. Define your yeets:
