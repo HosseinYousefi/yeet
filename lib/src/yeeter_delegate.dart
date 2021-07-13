@@ -161,7 +161,8 @@ class YeeterDelegate extends RouterDelegate<String> with ChangeNotifier {
       if (_pages.length == 1) {
         return;
       }
-      yeet(_pages[_pages.length - 2].path);
+      _pages.removeLast();
+      notifyListeners();
       return;
     }
     final uri = Uri.parse(path);

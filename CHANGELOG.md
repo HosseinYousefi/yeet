@@ -1,4 +1,7 @@
-## 0.4.3
+## 0.4.5
+* Fixed a bug in `context.yeet`.
+
+## 0.4.4
 * Fixed a bug in `context.push`.
 
 ## 0.4.3
