@@ -1,3 +1,6 @@
+## 0.4.6
+* Added `observers` argument to `YeeterDelegate` to add more `NavigatorObserver`s.
+
 ## 0.4.5
 * Fixed a bug in `context.yeet`.
 

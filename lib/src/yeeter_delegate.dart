@@ -22,8 +22,11 @@ class YeeterDelegate extends RouterDelegate<String> with ChangeNotifier {
   Map<String, String> get params => Map.unmodifiable(_params);
   Map<String, String> get queryParams => Map.unmodifiable(_queryParams);
 
+  final List<NavigatorObserver> observers;
+
   YeeterDelegate({
     required Yeet yeet,
+    this.observers = const [],
   }) : _yeet = yeet {
     this.yeet(currentConfiguration);
   }
@@ -143,7 +146,7 @@ class YeeterDelegate extends RouterDelegate<String> with ChangeNotifier {
       return Navigator(
         key: _navigatorKey,
         pages: _pages.map((e) => e.page).toList(),
-        observers: [_heroController],
+        observers: [_heroController, ...observers],
         onPopPage: (route, result) {
           yeet();
           return false;
