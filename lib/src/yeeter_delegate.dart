@@ -35,31 +35,32 @@ class YeeterDelegate extends RouterDelegate<String> with ChangeNotifier {
     return Builder(builder: node.builder!);
   }
 
-  static ExtendedPage _makePage(String path, Yeet node) {
+  static ExtendedPage _makePage(String path, Yeet node,
+      [bool uniqueKey = false]) {
     final child = _makeChild(node);
     return ExtendedPage(
       page: node.transition.when(
         adaptive: () => (UniversalPlatform.isIOS || UniversalPlatform.isMacOS)
             ? CupertinoPage(
-                key: ValueKey(path),
+                key: uniqueKey ? UniqueKey() : ValueKey(path),
                 child: child,
                 fullscreenDialog: node.fullscreenDialog,
                 maintainState: node.maintainState,
               )
             : MaterialPage(
-                key: ValueKey(path),
+                key: uniqueKey ? UniqueKey() : ValueKey(path),
                 child: child,
                 fullscreenDialog: node.fullscreenDialog,
                 maintainState: node.maintainState,
               ),
         material: () => MaterialPage(
-          key: ValueKey(path),
+          key: uniqueKey ? UniqueKey() : ValueKey(path),
           child: child,
           fullscreenDialog: node.fullscreenDialog,
           maintainState: node.maintainState,
         ),
         cupertino: () => CupertinoPage(
-          key: ValueKey(path),
+          key: uniqueKey ? UniqueKey() : ValueKey(path),
           child: child,
           fullscreenDialog: node.fullscreenDialog,
           maintainState: node.maintainState,
@@ -74,7 +75,7 @@ class YeeterDelegate extends RouterDelegate<String> with ChangeNotifier {
           barrierLabel,
         ) =>
             YeetPage(
-          key: ValueKey(path),
+          key: uniqueKey ? UniqueKey() : ValueKey(path),
           transitionsBuilder: transitionsBuilder,
           fullscreenDialog: node.fullscreenDialog,
           maintainState: node.maintainState,
@@ -94,8 +95,9 @@ class YeeterDelegate extends RouterDelegate<String> with ChangeNotifier {
   List<ExtendedPage>? _dfs(
     Yeet node,
     String path,
-    int matchedTill,
-  ) {
+    int matchedTill, [
+    bool uniqueKey = false,
+  ]) {
     final pages = <ExtendedPage>[];
     if (node.regExp != null) {
       // Handling relative and non-relative paths correctly
@@ -109,7 +111,7 @@ class YeeterDelegate extends RouterDelegate<String> with ChangeNotifier {
           final queryPath = Uri(queryParameters: _queryParams).query;
           final pagePath = path.substring(0, matchedTill + match.end) +
               (isFinal && queryPath.isNotEmpty ? '?$queryPath' : '');
-          pages.add(_makePage(pagePath, node));
+          pages.add(_makePage(pagePath, node, uniqueKey));
         }
         if (isFinal) {
           // The matching is final.
@@ -128,7 +130,8 @@ class YeeterDelegate extends RouterDelegate<String> with ChangeNotifier {
       for (int childIndex = 0;
           childIndex < node.children!.length;
           ++childIndex) {
-        final childList = _dfs(node.children![childIndex], path, matchedTill);
+        final childList =
+            _dfs(node.children![childIndex], path, matchedTill, uniqueKey);
         if (childList != null) {
           // We found a match, we can return.
           pages.addAll(childList);
@@ -212,6 +215,7 @@ class YeeterDelegate extends RouterDelegate<String> with ChangeNotifier {
         _yeet,
         uri.path,
         0,
+        true,
       )!;
       _pages = [
         ..._pages,

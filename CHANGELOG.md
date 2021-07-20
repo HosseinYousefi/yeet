@@ -1,3 +1,6 @@
+## 0.4.7
+* `context.push` now is able to push multiple pages of the same path within the navigation stack.
+
 ## 0.4.6
 * Added `observers` argument to `YeeterDelegate` to add more `NavigatorObserver`s.
 

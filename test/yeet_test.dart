@@ -9,9 +9,19 @@ void main() {
     children: [
       Yeet(
         path: '/dialog',
-        builder: (context) => ElevatedButton(
-          onPressed: () => context.yeet(),
-          child: Text('Close Dialog'),
+        builder: (context) => Column(
+          children: [
+            ElevatedButton(
+              onPressed: () => context.yeet(),
+              child: Text('Close Dialog'),
+            ),
+            ElevatedButton(
+              onPressed: () {
+                context.push('/dialog');
+              },
+              child: Text('Show Dialog'),
+            ),
+          ],
         ),
       ),
       Yeet(
@@ -264,6 +274,28 @@ void main() {
     await tester.tap(find.widgetWithText(ElevatedButton, 'Close Dialog'));
     await tester.pumpAndSettle();
 
+    expect(find.text('/'), findsOneWidget);
+  });
+
+  testWidgets('push multiple times', (tester) async {
+    await tester.pumpWidget(MaterialApp.router(
+      routeInformationParser: YeetInformationParser(),
+      routerDelegate: YeeterDelegate(yeet: yeet),
+    ));
+    await tester.tap(find.widgetWithText(ElevatedButton, 'Show Dialog'));
+    await tester.pumpAndSettle();
+    expect(find.text('Close Dialog'), findsOneWidget);
+
+    await tester.tap(find.widgetWithText(ElevatedButton, 'Show Dialog'));
+    await tester.pumpAndSettle();
+    expect(find.text('Close Dialog'), findsOneWidget);
+
+    await tester.tap(find.widgetWithText(ElevatedButton, 'Close Dialog'));
+    await tester.pumpAndSettle();
+    expect(find.text('Close Dialog'), findsOneWidget);
+
+    await tester.tap(find.widgetWithText(ElevatedButton, 'Close Dialog'));
+    await tester.pumpAndSettle();
     expect(find.text('/'), findsOneWidget);
   });
 
