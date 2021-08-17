@@ -142,6 +142,10 @@ class YeeterDelegate extends RouterDelegate<String> with ChangeNotifier {
           matchedTill = 0;
         }
       }
+    } else {
+      if (node.builder != null) {
+        toBeAddedPath = '${path.substring(0, matchedTill)}*';
+      }
     }
     if (node.children != null) {
       for (int childIndex = 0;
