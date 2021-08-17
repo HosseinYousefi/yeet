@@ -2,6 +2,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:path_to_regexp/path_to_regexp.dart';
 import 'package:universal_platform/universal_platform.dart';
+import 'package:yeet/src/yeet_context.dart';
 import 'package:yeet/src/yeet_page.dart';
 
 import 'extended_page.dart';
@@ -31,36 +32,42 @@ class YeeterDelegate extends RouterDelegate<String> with ChangeNotifier {
     this.yeet(currentConfiguration);
   }
 
-  static Widget _makeChild(Yeet node) {
-    return Builder(builder: node.builder!);
+  Widget _makeChild(Yeet node, Widget? nested, int? index) {
+    return node.builder!(YeetContext(
+      params: _params,
+      queryParams: _queryParams,
+      delegate: this,
+      child: nested,
+      selectedIndex: index,
+    ));
   }
 
-  static ExtendedPage _makePage(String path, Yeet node,
-      [bool uniqueKey = false]) {
-    final child = _makeChild(node);
+  ExtendedPage _makePage(
+      String path, LocalKey key, Yeet node, Widget? nested, int? index) {
+    final child = _makeChild(node, nested, index);
     return ExtendedPage(
       page: node.transition.when(
         adaptive: () => (UniversalPlatform.isIOS || UniversalPlatform.isMacOS)
             ? CupertinoPage(
-                key: uniqueKey ? UniqueKey() : ValueKey(path),
+                key: key,
                 child: child,
                 fullscreenDialog: node.fullscreenDialog,
                 maintainState: node.maintainState,
               )
             : MaterialPage(
-                key: uniqueKey ? UniqueKey() : ValueKey(path),
+                key: key,
                 child: child,
                 fullscreenDialog: node.fullscreenDialog,
                 maintainState: node.maintainState,
               ),
         material: () => MaterialPage(
-          key: uniqueKey ? UniqueKey() : ValueKey(path),
+          key: key,
           child: child,
           fullscreenDialog: node.fullscreenDialog,
           maintainState: node.maintainState,
         ),
         cupertino: () => CupertinoPage(
-          key: uniqueKey ? UniqueKey() : ValueKey(path),
+          key: key,
           child: child,
           fullscreenDialog: node.fullscreenDialog,
           maintainState: node.maintainState,
@@ -75,7 +82,7 @@ class YeeterDelegate extends RouterDelegate<String> with ChangeNotifier {
           barrierLabel,
         ) =>
             YeetPage(
-          key: uniqueKey ? UniqueKey() : ValueKey(path),
+          key: key,
           transitionsBuilder: transitionsBuilder,
           fullscreenDialog: node.fullscreenDialog,
           maintainState: node.maintainState,
@@ -99,6 +106,7 @@ class YeeterDelegate extends RouterDelegate<String> with ChangeNotifier {
     bool uniqueKey = false,
   ]) {
     final pages = <ExtendedPage>[];
+    String? toBeAddedPath;
     if (node.regExp != null) {
       // Handling relative and non-relative paths correctly
       final isRootPath = node.path!.startsWith('/');
@@ -111,10 +119,19 @@ class YeeterDelegate extends RouterDelegate<String> with ChangeNotifier {
           final queryPath = Uri(queryParameters: _queryParams).query;
           final pagePath = path.substring(0, matchedTill + match.end) +
               (isFinal && queryPath.isNotEmpty ? '?$queryPath' : '');
-          pages.add(_makePage(pagePath, node, uniqueKey));
+          toBeAddedPath = pagePath;
         }
         if (isFinal) {
           // The matching is final.
+          if (toBeAddedPath != null) {
+            pages.add(_makePage(
+              toBeAddedPath,
+              uniqueKey ? UniqueKey() : ValueKey(toBeAddedPath),
+              node,
+              null,
+              null,
+            ));
+          }
           return pages;
         }
         if (path[matchedTill + match.end - 1] == '/') {
@@ -133,12 +150,41 @@ class YeeterDelegate extends RouterDelegate<String> with ChangeNotifier {
         final childList =
             _dfs(node.children![childIndex], path, matchedTill, uniqueKey);
         if (childList != null) {
+          if (toBeAddedPath != null) {
+            if (node.isNesting) {
+              pages.add(_makePage(
+                childList.last.path,
+                uniqueKey ? UniqueKey() : ValueKey(toBeAddedPath),
+                node,
+                Navigator(
+                  key: uniqueKey ? UniqueKey() : ValueKey('nav-$path'),
+                  pages: childList.map((e) => e.page).toList(),
+                  onPopPage: (route, result) {
+                    yeet();
+                    return false;
+                  },
+                ),
+                childIndex,
+              ));
+            } else {
+              pages.add(_makePage(
+                toBeAddedPath,
+                uniqueKey ? UniqueKey() : ValueKey(toBeAddedPath),
+                node,
+                null,
+                null,
+              ));
+              pages.addAll(childList);
+            }
+          } else {
+            pages.addAll(childList);
+          }
           // We found a match, we can return.
-          pages.addAll(childList);
           return pages;
         }
       }
     }
+
     // No match found in this subtree.
     return null;
   }

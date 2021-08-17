@@ -1,11 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:path_to_regexp/path_to_regexp.dart';
+import 'package:yeet/src/yeet_context.dart';
 import 'package:yeet/yeet.dart';
 
 import 'yeet_transition.dart';
 
-typedef YeetWidgetBuilder = Widget Function(BuildContext context);
+typedef YeetWidgetBuilder = Widget Function(YeetContext context);
 
 /// The class that defines your routing tree structure.
 ///
@@ -48,6 +49,12 @@ class Yeet {
   /// Defaults to false.
   final bool fullscreenDialog;
 
+  /// Whether or not it's nesting the subyeets.
+  ///
+  /// Used for nested navigation, for instance when you have a bottom navigation bar.
+  /// Defaults to false.
+  final bool isNesting;
+
   final List<String> parameters;
   late final RegExp? regExp;
 
@@ -56,6 +63,7 @@ class Yeet {
     bool caseSensitive = true,
     this.maintainState = true,
     this.fullscreenDialog = false,
+    this.isNesting = false,
     this.builder,
     this.children,
     this.transition = const YeetTransition.adaptive(),

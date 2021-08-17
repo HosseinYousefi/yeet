@@ -30,7 +30,23 @@ class MyApp extends StatelessWidget {
           children: [
             Yeet(
               path: 'posts',
-              builder: (context) => PostsView(int.parse(context.params['id']!)),
+              builder: (context) => PostsView(int.parse(context.params['id']!),
+                  context.child, context.selectedIndex!),
+              isNesting: true,
+              children: [
+                Yeet(
+                  path: 'red',
+                  builder: (context) => Container(
+                    color: Colors.red,
+                  ),
+                ),
+                Yeet(
+                  path: 'blue',
+                  builder: (context) => Container(
+                    color: Colors.blue,
+                  ),
+                ),
+              ],
             )
           ],
         ),
@@ -88,7 +104,7 @@ class UserView extends StatelessWidget {
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
             ElevatedButton(
-              onPressed: () => context.yeet('posts'),
+              onPressed: () => context.yeet('posts/red'),
               child: Text('Posts'),
             ),
             SizedBox(height: 10),
@@ -105,13 +121,35 @@ class UserView extends StatelessWidget {
 
 class PostsView extends StatelessWidget {
   final int id;
+  final Widget? child;
+  final int index;
 
-  PostsView(this.id);
+  PostsView(this.id, this.child, this.index);
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(title: Text('Posts of user #$id')),
+      bottomNavigationBar: BottomNavigationBar(
+        currentIndex: index,
+        onTap: (value) {
+          if (value == 0) {
+            context.yeet('../red');
+          } else {
+            context.yeet('../blue');
+          }
+        },
+        items: [
+          BottomNavigationBarItem(
+            icon: Icon(Icons.error),
+            label: 'Red',
+          ),
+          BottomNavigationBarItem(
+            icon: Icon(Icons.air),
+            label: 'Blue',
+          ),
+        ],
+      ),
       body: Column(
         children: [
           Center(
@@ -132,6 +170,7 @@ class PostsView extends StatelessWidget {
               child: Text('Change path'),
             ),
           ),
+          if (child != null) Expanded(child: child!),
         ],
       ),
     );
