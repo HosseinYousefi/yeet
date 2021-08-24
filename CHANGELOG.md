@@ -1,3 +1,6 @@
+## 0.4.8
+* Created primitive hashCode for Yeet comparisons.
+
 ## 0.4.7
 * `context.push` now is able to push multiple pages of the same path within the navigation stack.
 

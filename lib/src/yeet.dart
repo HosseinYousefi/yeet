@@ -77,4 +77,18 @@ class Yeet {
       regExp = null;
     }
   }
+
+  @override
+  bool operator ==(Object o) {
+    return o is Yeet && hashCode == o.hashCode;
+  }
+
+  @override
+  int get hashCode {
+    int h = super.hashCode;
+    for (final child in children ?? []) {
+      h ^= child.hashCode;
+    }
+    return h ^ path.hashCode;
+  }
 }
