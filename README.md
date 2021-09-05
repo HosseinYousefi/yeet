@@ -17,13 +17,13 @@ A dank way to navigate.
 
 ## How to yeet?
 
-0. Install latest version of yeet:
+0. Install the latest version of yeet:
 
 ```yaml
 dependencies:
   flutter:
     sdk: flutter
-  yeet: ^0.4.7
+  yeet: ^0.4.9
 ```
 
 1. Define your yeets:

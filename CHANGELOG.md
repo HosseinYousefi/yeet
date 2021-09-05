@@ -1,3 +1,6 @@
+## 0.4.9
+* Adding names to pages, useful for analytics purposes.
+
 ## 0.4.8
 * Created primitive hashCode for Yeet comparisons.
 

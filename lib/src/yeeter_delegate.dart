@@ -42,24 +42,28 @@ class YeeterDelegate extends RouterDelegate<String> with ChangeNotifier {
       page: node.transition.when(
         adaptive: () => (UniversalPlatform.isIOS || UniversalPlatform.isMacOS)
             ? CupertinoPage(
+                name: path,
                 key: uniqueKey ? UniqueKey() : ValueKey(path),
                 child: child,
                 fullscreenDialog: node.fullscreenDialog,
                 maintainState: node.maintainState,
               )
             : MaterialPage(
+                name: path,
                 key: uniqueKey ? UniqueKey() : ValueKey(path),
                 child: child,
                 fullscreenDialog: node.fullscreenDialog,
                 maintainState: node.maintainState,
               ),
         material: () => MaterialPage(
+          name: path,
           key: uniqueKey ? UniqueKey() : ValueKey(path),
           child: child,
           fullscreenDialog: node.fullscreenDialog,
           maintainState: node.maintainState,
         ),
         cupertino: () => CupertinoPage(
+          name: path,
           key: uniqueKey ? UniqueKey() : ValueKey(path),
           child: child,
           fullscreenDialog: node.fullscreenDialog,
@@ -75,6 +79,7 @@ class YeeterDelegate extends RouterDelegate<String> with ChangeNotifier {
           barrierLabel,
         ) =>
             YeetPage(
+          name: path,
           key: uniqueKey ? UniqueKey() : ValueKey(path),
           transitionsBuilder: transitionsBuilder,
           fullscreenDialog: node.fullscreenDialog,
