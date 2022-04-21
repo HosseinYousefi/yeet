@@ -7,13 +7,13 @@ import 'package:yeet/src/yeet_page.dart';
 import 'extended_page.dart';
 import 'yeet.dart';
 
-final GlobalKey<NavigatorState> _navigatorKey = GlobalKey<NavigatorState>();
 final _heroController = HeroController();
 List<ExtendedPage> _pages = [];
 
 /// Put this as your routerDelegate in [MaterialApp.router].
 
-class YeeterDelegate extends RouterDelegate<String> with ChangeNotifier {
+class YeeterDelegate extends RouterDelegate<String>
+    with ChangeNotifier, PopNavigatorRouterDelegateMixin<String> {
   final Yeet _yeet;
 
   Map<String, String> _queryParams = {};
@@ -152,7 +152,7 @@ class YeeterDelegate extends RouterDelegate<String> with ChangeNotifier {
   Widget build(Object context) {
     if (_pages.isNotEmpty) {
       return Navigator(
-        key: _navigatorKey,
+        key: navigatorKey,
         pages: _pages.map((e) => e.page).toList(),
         observers: [_heroController, ...observers],
         onPopPage: (route, result) {
@@ -239,17 +239,6 @@ class YeeterDelegate extends RouterDelegate<String> with ChangeNotifier {
   }
 
   @override
-  Future<bool> popRoute() async {
-    return Future.sync(() {
-      if (_pages.length == 1) {
-        return false;
-      }
-      yeet(_pages[_pages.length - 2].path);
-      return true;
-    });
-  }
-
-  @override
   Future<void> setNewRoutePath(String path) {
     return Future.sync(() {
       yeet(path);
@@ -258,4 +247,7 @@ class YeeterDelegate extends RouterDelegate<String> with ChangeNotifier {
 
   @override
   String get currentConfiguration => _pages.isNotEmpty ? _pages.last.path : '/';
+
+  @override
+  final GlobalKey<NavigatorState> navigatorKey = GlobalKey<NavigatorState>();
 }

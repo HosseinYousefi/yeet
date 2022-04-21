@@ -3,8 +3,6 @@ import 'package:flutter/widgets.dart';
 import 'package:path_to_regexp/path_to_regexp.dart';
 import 'package:yeet/yeet.dart';
 
-import 'yeet_transition.dart';
-
 typedef YeetWidgetBuilder = Widget Function(BuildContext context);
 
 /// The class that defines your routing tree structure.

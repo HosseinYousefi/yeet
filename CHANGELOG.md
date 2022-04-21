@@ -1,3 +1,6 @@
+## 0.4.10
+* Using `PopNavigatorRouterDelegateMixin` for `YeeterDelegate`.
+
 ## 0.4.9
 * Adding names to pages, useful for analytics purposes.
 

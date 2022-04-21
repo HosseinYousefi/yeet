@@ -1,7 +1,7 @@
 name: yeet
 description: A dank and easy way to navigate using Router API of Navigator 2.0 -
   No boilerplate. No code generation. No classes. Just yeet!
-version: 0.4.9
+version: 0.4.10
 repository: https://github.com/HosseinYousefi/yeet
 
 environment:
